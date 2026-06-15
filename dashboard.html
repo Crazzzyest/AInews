@@ -234,6 +234,7 @@
   <div class="stat"><strong>7</strong> saker i siste kjøring</div>
   <div class="stat"><strong>59</strong> totalt (52 tidligere, kollapset)</div>
   <div class="stat"><strong>12</strong> tracked markets</div>
+  <div class="stat"><strong>3</strong> norske AI-utsagn</div>
   <div class="stat"><strong>20</strong> sources</div>
   <div class="stat"><strong>10</strong> healthy · <strong>5</strong> partial · <strong>5</strong> broken</div>
   <div class="stat">Siste kjøring: <strong>2</strong> general · <strong>4</strong> AI · <strong>1</strong> significant (AI)</div>
@@ -361,6 +362,39 @@
   <strong>Taiwan</strong> ligger flatt på 7% siden jan 2025.
   <br><strong>Sparklinjen viser hele den daterte historikken</strong> (grønn = opp siden start, rød = ned). Fortsatt ikke funnet: Russia–Ukraina-<em>våpenhvile</em>, Russia–NATO, AGI-dato. Si "add market X" for å legge til.
 </div>
+
+<h2>🇳🇴 Norsk AI — uttalelser i media</h2>
+<div class="hint">Utsagn om kunstig intelligens fra profilerte norske stemmer (politikk, forskning, næringsliv). Kuratert seksjon, ikke en daglig feed — si «legg til norsk sitat …» for å utvide. Klikk en kolonne for å sortere.</div>
+<table id="norway-table" data-default-sort="date" data-default-dir="desc">
+  <thead>
+    <tr>
+      <th class="sortable" data-key="date" data-type="date" style="width: 100px;">Dato</th>
+      <th class="sortable" data-key="person" data-type="string" style="width: 22%;">Person</th>
+      <th class="sortable" data-key="source" data-type="string" style="width: 110px;">Kilde</th>
+      <th>Utsagn</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-date="2026-06-15" data-person="Silvija Seres" data-source="Digi.no">
+      <td class="date">2026-06-15</td>
+      <td><span class="source-name">Silvija Seres</span><br><span class="notes">teknologiinvestor</span></td>
+      <td class="title"><a href="https://www.digi.no/artikler/debatt-ki-gjor-darlige-utviklingsprosesser-farligere/573031">Digi.no</a></td>
+      <td class="belief">«Generativ KI introduserer maskinhastighet i miljøer som fortsatt er sikret for menneskelig hastighet.» Advarer (m/ Otto Lote) om at generativ KI forsterker svake utviklingsprosesser i stedet for å gjøre dem tryggere — «risikoen ligger også i miljøet modellen kobles til».</td>
+    </tr>
+    <tr data-date="2026-05-20" data-person="Karianne Tung" data-source="Altinget">
+      <td class="date">2026-05-20</td>
+      <td><span class="source-name">Karianne Tung</span><br><span class="notes">digitaliseringsminister</span></td>
+      <td class="title"><a href="https://www.altinget.no/lovebakken/artikkel/tung-svarer-kunstig-intelligens-er-et-nyttig-verktoey-men-mennesker-har-ansvaret">Altinget</a></td>
+      <td class="belief">«Kunstig intelligens er et nyttig verktøy, også for offentlig sektor, men det er alltid mennesker som står ansvarlig.» Understreker at det er «et menneskelig ansvar å sjekke at påstander og kilder stemmer, enten de kommer fra KI eller en avisartikkel».</td>
+    </tr>
+    <tr data-date="2026-03-19" data-person="Nicolai Tangen" data-source="Nettavisen">
+      <td class="date">2026-03-19</td>
+      <td><span class="source-name">Nicolai Tangen</span><br><span class="notes">sjef, Oljefondet (NBIM)</span></td>
+      <td class="title"><a href="https://www.nettavisen.no/norsk-debatt/nicolai-tangen-advarer-bruker-du-ikke-ai-vil-du-aldri-bli-forfremmet/o/5-95-2939693">Nettavisen</a></td>
+      <td class="belief">«Bruker du ikke AI, vil du aldri bli forfremmet. Du får ikke jobb.» Skarp advarsel om at KI-kompetanse blir avgjørende i arbeidslivet.</td>
+    </tr>
+  </tbody>
+</table>
 
 <h2>Latest run — 2026-06-15</h2>
 <div class="filter-bar">
@@ -798,7 +832,7 @@
       sortTable(table, defKey, defTh ? (defTh.dataset.type || "string") : "string", defDir);
     }
   }
-  document.querySelectorAll("table#items-table, table#items-table-prev, table#sources-table, table#markets-table").forEach(wireTable);
+  document.querySelectorAll("table#items-table, table#items-table-prev, table#sources-table, table#markets-table, table#norway-table").forEach(wireTable);
 
   // ----- Filter pills (items table only) -----
   var itemsTable = document.getElementById("items-table");
