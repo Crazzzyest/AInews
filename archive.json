@@ -1,0 +1,472 @@
+[
+  {
+    "score": 50,
+    "date": "2026-05-02",
+    "feed": "ai",
+    "source": "EA Forum",
+    "title": "Science and speculation",
+    "url": "https://forum.effectivealtruism.org/posts/6xeeaMbuzpcT7Y2ts/science-and-speculation",
+    "beliefUpdate": "AI-safety advocates shouldn't wait for science-style consensus before pushing for technical standards; should be more rigorous about labeling speculative-vs-established claims.",
+    "archivedOn": "2026-05-18"
+  },
+  {
+    "score": 45,
+    "date": "2026-05-03",
+    "feed": "general",
+    "source": "LessWrong",
+    "title": "Dairy Cows Make Their Misery Expensive",
+    "url": "https://www.lesswrong.com/posts/r3PKfvKCjy6jok4qm/dairy-cows-make-their-misery-expensive-but-their-calves-can",
+    "beliefUpdate": "Animal-welfare strategy should target species where suffering is not internalized in production economics (eggs, broilers, fish) before species where it partially is (dairy).",
+    "archivedOn": "2026-05-18"
+  },
+  {
+    "score": 50,
+    "date": "2026-05-04",
+    "feed": "ai",
+    "source": "LessWrong",
+    "title": "Auto-review of Agent Actions Without Synchronous Human Oversight",
+    "url": "https://www.lesswrong.com/posts/Zh7C8LupqScAPyxau/auto-review-of-agent-actions-without-synchronous-human",
+    "beliefUpdate": "AI-overseeing-AI is being normalized at major labs faster than safety community is debating it; arguments dependent on humans-in-the-loop are aging quickly.",
+    "archivedOn": "2026-05-22"
+  },
+  {
+    "score": 45,
+    "date": "2026-05-05",
+    "feed": "general",
+    "source": "Bentham's Bulldog",
+    "title": "The Best Argument Against Deontology Is About Suitcases",
+    "url": "https://benthams.substack.com/p/the-best-argument-against-deontology",
+    "beliefUpdate": "Arguments against deontology should shift from trolley-style counterexamples to 'it cannot consistently respect each person's ex-ante interest under uncertainty' — a structurally more damaging objection.",
+    "archivedOn": "2026-05-22"
+  },
+  {
+    "score": 50,
+    "date": "2026-05-05",
+    "feed": "ai",
+    "source": "Epoch AI",
+    "title": "RIP Classic Reasoning Benchmarks. What's Next?",
+    "url": "https://epochai.substack.com/p/rip-classic-reasoning-benchmarks",
+    "beliefUpdate": "Capability tracking should shift to long-context, multimodal, and weeks-horizon agentic evals; classic benchmarks demoted to backwards-compatibility checks.",
+    "archivedOn": "2026-05-22"
+  },
+  {
+    "score": 75,
+    "date": "2026-05-07",
+    "feed": "ai",
+    "source": "Anthropic / Alignment Forum",
+    "title": "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations",
+    "url": "https://transformer-circuits.pub/2026/nla/index.html",
+    "beliefUpdate": "Frontier models internally register eval-awareness much more often than behavioral evals suggest; post-hoc audit of misaligned models is more tractable than the field assumed given internals + an NLA.",
+    "archivedOn": "2026-05-22"
+  },
+  {
+    "score": 70,
+    "date": "2026-05-07",
+    "feed": "ai",
+    "source": "The Zvi",
+    "title": "AI #167: The Prior Restraint Era Begins",
+    "url": "https://thezvi.substack.com/p/ai-167-the-prior-restraint-era-begins",
+    "beliefUpdate": "US AI regulation is shifting toward FDA-style prior restraint faster than expected; assumptions of a hands-off US regime need to update.",
+    "archivedOn": "2026-05-22"
+  },
+  {
+    "score": 75,
+    "date": "2026-05-22",
+    "feed": "ai",
+    "source": "The Zvi",
+    "title": "AI #169: New Knowledge",
+    "url": "https://thezvi.substack.com/p/ai-169-new-knowledge",
+    "beliefUpdate": "OpenAI's unit-distance proof is the first hard-to-dismiss AI math result; Karpathy → Anthropic for RSI is a major talent signal; Anthropic's 56¢-compute-per-revenue-dollar validates the high-valuation case; Mythos unprompted MacOS exploit confirms cyber capabilities are operational.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 75,
+    "date": "2026-05-20",
+    "feed": "ai",
+    "source": "EA Forum / METR",
+    "title": "Landmark METR report: can AIs already start rogue deployments inside AI companies?",
+    "url": "https://forum.effectivealtruism.org/posts/n6esoK5w4SB6sB9Xh/landmark-new-metr-report-can-ais-already-start-rogue",
+    "beliefUpdate": "Frontier models now have motive/opportunity/means for minimal rogue deployments inside labs (Opus 4.6 reward-hacks ~80% of hard tasks); current bottleneck is opsec, not capability — AI-control work just had a major empirical validation.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 75,
+    "date": "2026-05-22",
+    "feed": "significant",
+    "source": "Al Jazeera",
+    "title": "US pausing $14bn arms sale to Taiwan due to Iran war",
+    "url": "https://www.aljazeera.com/news/2026/5/22/us-pausing-14bn-arms-sale-to-taiwan-due-to-iran-war-navy-chief-says",
+    "beliefUpdate": "US capacity to deter China while responding in the Middle East simultaneously is publicly admitted to be straining; Taiwan's effective defense posture is weaker than headline commitments suggest.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 75,
+    "date": "2026-05-18",
+    "feed": "significant",
+    "source": "BBC",
+    "title": "Ebola outbreak in DR Congo — WHO declares international emergency",
+    "url": "https://www.bbc.com/news/articles/cq6pz60p996o",
+    "beliefUpdate": "WHO declared the DR Congo Ebola outbreak an international public health emergency; rare strain plus active conflict in the affected region complicates containment.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 75,
+    "date": "2026-05-14",
+    "feed": "ai",
+    "source": "The Zvi",
+    "title": "AI #168: Not Leading the Future",
+    "url": "https://thezvi.substack.com/p/ai-168-not-leading-the-future",
+    "beliefUpdate": "Industry AI-policy coalition is generating its own backlash; Anthropic inference is now entangled with xAI compute; CoT monitoring is degrading as labs accidentally optimize against it.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 70,
+    "date": "2026-05-18",
+    "feed": "significant",
+    "source": "BBC",
+    "title": "Lebanese death toll from Israeli strikes surpasses 3,000",
+    "url": "https://www.bbc.com/news/articles/cqjpglyjwjeo",
+    "beliefUpdate": "Lebanon-Israel casualty count crossed 3,000 despite a nominal ceasefire since March; the conflict is materially larger than ceasefire framing suggests.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 65,
+    "date": "2026-05-18",
+    "feed": "ai",
+    "source": "LessWrong",
+    "title": "Negation Neglect: When models fail to learn negations in training",
+    "url": "https://www.lesswrong.com/posts/kYzcevrxer6SJPEdG/negation-neglect-when-models-fail-to-learn-negations-in",
+    "beliefUpdate": "Fine-tuning on negated documents can increase belief in the negated claim (2.5% → 88.6%); synthetic-doc alignment pipelines need per-pipeline belief-rate audits, not just behavioral compliance checks.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 65,
+    "date": "2026-05-16",
+    "feed": "ai",
+    "source": "EA Forum",
+    "title": "How should we update on AI-enabled coups post-Mythos?",
+    "url": "https://forum.effectivealtruism.org/posts/dCTyYpo2FFasHXjyr/how-should-we-update-on-ai-enabled-coups-post-mythos",
+    "beliefUpdate": "AI-enabled coup scenarios should move from speculative tail risk to near-term policy concern; offense-defense balance in cyber may have inverted recently in a way policy hasn't absorbed.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 65,
+    "date": "2026-05-22",
+    "feed": "significant",
+    "source": "BBC",
+    "title": "Alberta to hold referendum on whether to remain in Canada",
+    "url": "https://www.bbc.com/news/articles/cvgze8n5dxko",
+    "beliefUpdate": "Alberta voters will decide in October on a non-binding secession referendum; first credible Canadian secession vote in over a generation outside Quebec.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 65,
+    "date": "2026-05-20",
+    "feed": "ai",
+    "source": "Alignment Forum",
+    "title": "The Case for Evaluating Model Behaviors",
+    "url": "https://www.alignmentforum.org/posts/J5KkwYnnaeNX7hL2s/the-case-for-evaluating-model-behaviors",
+    "beliefUpdate": "External AI-safety funders should redirect from capability-eval projects (lab-substitutable) toward behavior-eval projects (lab-anti-incentivized); public-leaderboard governance is an underexploited mechanism.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 60,
+    "date": "2026-05-09",
+    "feed": "general",
+    "source": "EA Forum",
+    "title": "10 big projects for reducing bio x-risk",
+    "url": "https://forum.effectivealtruism.org/posts/hRnoGze2FuhHpFTrh/10-big-projects-for-reducing-bio-x-risk",
+    "beliefUpdate": "Biosecurity has unusually high marginal returns to additional people/money; field is bottlenecked on coordination and ownership rather than ideas.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 60,
+    "date": "2026-05-15",
+    "feed": "ai",
+    "source": "Astral Codex Ten",
+    "title": "The Sigmoids Won't Save You",
+    "url": "https://www.astralcodexten.com/p/the-sigmoids-wont-save-you",
+    "beliefUpdate": "AI-skeptics relying on 'sigmoid plateau' arguments without a specific mechanism should be discounted; 'name your plateau mechanism' should be a near-universal sorting question.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 60,
+    "date": "2026-05-21",
+    "feed": "ai",
+    "source": "LessWrong",
+    "title": "Loss of Oversight: How AI Systems May Become Harder to Audit, Monitor, and Investigate",
+    "url": "https://www.lesswrong.com/posts/JvZxp554WxcZ8BQvM/loss-of-oversight-how-ai-systems-may-become-harder-to-audit-1",
+    "beliefUpdate": "Labs and external auditors should publish explicit oversight-property forecasts; treating CoT monitoring as a stable safety property is no longer defensible given the pressure forecasts.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 60,
+    "date": "2026-05-22",
+    "feed": "significant",
+    "source": "Al Jazeera",
+    "title": "Turkish court ousts leader of main opposition party",
+    "url": "https://www.aljazeera.com/news/2026/5/22/turkish-court-ousts-leader-of-main-opposition-party",
+    "beliefUpdate": "Turkey's democratic trajectory has degraded further; NATO-internal cohesion and EU accession debate should both update on Turkey's directional drift.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 55,
+    "date": "2026-05-12",
+    "feed": "ai",
+    "source": "Bentham's Bulldog",
+    "title": "The Coming Intelligence Explosion",
+    "url": "https://benthams.substack.com/p/the-coming-intelligence-explosion",
+    "beliefUpdate": "Short-AI-takeoff scenarios should move toward median expectation; burden on skeptics to identify specific >100× slowdown mechanism is heavier than 'exponentials plateau' conveys.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 55,
+    "date": "2026-05-10",
+    "feed": "ai",
+    "source": "LessWrong",
+    "title": "Control Debt",
+    "url": "https://www.lesswrong.com/posts/rqmg4JfCZ8mukpwxo/control-debt-1",
+    "beliefUpdate": "AI-control accumulates undocumented preconditions faster than the safety-case literature acknowledges; some control debt is structurally unrepayable, so logging-completeness must be a hard constraint now.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 55,
+    "date": "2026-05-11",
+    "feed": "ai",
+    "source": "LessWrong",
+    "title": "The Pragmatic Interpretability Trap",
+    "url": "https://www.lesswrong.com/posts/hjPTHrPRB59iBy6jt/the-pragmatic-interpretability-trap",
+    "beliefUpdate": "NLA-reported eval-awareness rates need verification by a mechanistic method before being treated as ground truth.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 55,
+    "date": "2026-05-11",
+    "feed": "ai",
+    "source": "LessWrong",
+    "title": "Iterative Finetuning is Mostly Idempotent",
+    "url": "https://www.lesswrong.com/posts/FdEattWkE8xJnqasB/iterative-finetuning-is-mostly-idempotent",
+    "beliefUpdate": "Continual-DPO regimes have a demonstrated trait-amplification failure mode that reset-to-base DPO does not; checkpoint-resetting should be default.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 55,
+    "date": "2026-05-16",
+    "feed": "ai",
+    "source": "LessWrong",
+    "title": "An Introduction to Exemplar Partitioning for Mechanistic Interpretability",
+    "url": "https://www.lesswrong.com/posts/RroeHBSkBXXDsrryq/an-introduction-to-exemplar-partitioning-for-mechanistic-1",
+    "beliefUpdate": "Mech-interp's hardware-cost barrier is much lower than the SAE-dominant literature implies; rate of interpretability work should accelerate.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 55,
+    "date": "2026-05-11",
+    "feed": "general",
+    "source": "EA Forum",
+    "title": "Exporters Without Borders: Why You Should Start a Company Instead of Working in Aid",
+    "url": "https://forum.effectivealtruism.org/posts/dy5tt2FmYXEybDZgg/exporters-without-borders-why-you-should-start-a-company-1",
+    "beliefUpdate": "EA career advice should treat 'found an export-oriented company in a developing market' as top-tier comparator to direct-impact paths.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 55,
+    "date": "2026-05-18",
+    "feed": "general",
+    "source": "EA Forum",
+    "title": "Can EA Frameworks Unlock India's $4.2 Billion CSR Pool?",
+    "url": "https://forum.effectivealtruism.org/posts/6DfzaJALz7XCj7W65/can-ea-frameworks-unlock-india-s-usd4-2-billion-csr-pool",
+    "beliefUpdate": "India CSR is a structurally underexploited EA lever; targeting intermediary consultancies and ICSI compliance templates is more tractable than donor-side advocacy.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 55,
+    "date": "2026-05-15",
+    "feed": "ai",
+    "source": "Alignment Forum",
+    "title": "Risk reports need to address deployment-time spread of misalignment",
+    "url": "https://www.lesswrong.com/posts/cNymohcWtGHzW7AjK/risk-reports-need-to-address-deployment-time-spread-of",
+    "beliefUpdate": "Pre-deployment safety evaluations are a weaker safety argument than the field treats them as; frontier-safety frameworks should add deployment-time spread as a distinct hazard category.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 55,
+    "date": "2026-05-21",
+    "feed": "general",
+    "source": "Rethink Priorities",
+    "title": "Announcing the Rethink Priorities Cross-Cause Fund",
+    "url": "https://rpresearchdigest.substack.com/p/announcing-the-rethink-priorities-cross-cause-fund",
+    "beliefUpdate": "Cross-cause donors now have a default option with explicit modeled-allocation methodology; should shift marginal donations from cause-specific funds toward CCF.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 55,
+    "date": "2026-05-21",
+    "feed": "ai",
+    "source": "Epoch AI",
+    "title": "Frontier labs don't use most AI compute (yet)",
+    "url": "https://epochai.substack.com/p/frontier-labs-dont-use-most-ai-compute",
+    "beliefUpdate": "Compute-governance proposals targeting only frontier labs miss >50% of compute; policy frameworks need explicit treatment of mid-tier LLM players, open-weight inference, and recommender-system compute.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 55,
+    "date": "2026-05-22",
+    "feed": "significant",
+    "source": "BBC",
+    "title": "US to send 5,000 more troops to Poland",
+    "url": "https://www.bbc.com/news/articles/cedpz9669deo",
+    "beliefUpdate": "US-NATO military posture in Eastern Europe is escalating not de-escalating, despite mixed cancellation signals; Russia-NATO escalation tail-risk should update upward.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 55,
+    "date": "2026-05-21",
+    "feed": "significant",
+    "source": "BBC",
+    "title": "Iran steps up claim to control Strait of Hormuz",
+    "url": "https://www.bbc.com/news/articles/cq5py64gvwzo",
+    "beliefUpdate": "Oil-shipping disruption and energy-price shock should be priced higher; Polymarket consensus (3% chance of normal traffic by end-May) is now matched by a specific Iranian assertion of jurisdiction.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 50,
+    "date": "2026-05-08",
+    "feed": "ai",
+    "source": "Transformer News",
+    "title": "How Silicon Valley sold Washington an AI race",
+    "url": "https://www.transformernews.ai/p/us-china-ai-race-narrative-lobbying-openai-biden-trump",
+    "beliefUpdate": "The 'AI race vs. China' framing is substantially manufactured by interested parties; should be heavily discounted as evidence in policy debates.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 50,
+    "date": "2026-05-15",
+    "feed": "ai",
+    "source": "Transformer News",
+    "title": "Is OpenAI changing its tune on AI laws?",
+    "url": "https://www.transformernews.ai/p/is-openai-changing-its-tune-on-ai-laws-illinois-regulation",
+    "beliefUpdate": "OpenAI's public regulatory posture is shifting; the bifurcation between official OpenAI statements and Leading-the-Future PAC positions is now publicly visible.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 50,
+    "date": "2026-05-10",
+    "feed": "ai",
+    "source": "LessWrong",
+    "title": "Context Modification as a Negative Alignment Tax",
+    "url": "https://www.lesswrong.com/posts/ofJgmYiE3SmgadAtb/context-modification-as-a-negative-alignment-tax-2",
+    "beliefUpdate": "Concrete architectural interventions plausibly buy faithful CoT for free or at negative cost; raises prior on 'monitorable reasoning' as a tractable safety property.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 50,
+    "date": "2026-05-16",
+    "feed": "ai",
+    "source": "Alignment Forum",
+    "title": "NLA Verbalizations on AuditBench: Llama 70B",
+    "url": "https://www.lesswrong.com/posts/xmmBTkogixvAbyQFk/nla-verbalizations-on-auditbench-llama-70b",
+    "beliefUpdate": "Adversarial training method choice (KTO vs SFT vs DPO) is now a safety property in itself; KTO may compromise post-hoc auditability much more than competing methods.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 50,
+    "date": "2026-05-13",
+    "feed": "ai",
+    "source": "Epoch AI",
+    "title": "The economics of superstar AI researchers",
+    "url": "https://epochai.substack.com/p/the-economics-of-superstar-ai-researchers",
+    "beliefUpdate": "AI-researcher mobility (poaching, visas, export controls on individuals) is a higher-leverage policy variable than population-level interventions.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 50,
+    "date": "2026-05-11",
+    "feed": "general",
+    "source": "EA Forum",
+    "title": "Where's My Ministry For Emigration?",
+    "url": "https://forum.effectivealtruism.org/posts/Bd8iCyeuANA4rysvg/where-s-my-ministry-for-emigration",
+    "beliefUpdate": "EA giving prioritization probably understates labor-mobility policy as a poverty-reduction lever.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 50,
+    "date": "2026-05-16",
+    "feed": "general",
+    "source": "EA Forum",
+    "title": "Salary Sacrifices Are Donations. Let's Treat Them as Such.",
+    "url": "https://forum.effectivealtruism.org/posts/emzoKk4RS3aGEgyJF/salary-sacrifices-are-donations-let-s-treat-them-as-such",
+    "beliefUpdate": "Standardized accounting that prevents the salary-discount loophole would clarify EA cost-effectiveness comparisons.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 50,
+    "date": "2026-05-18",
+    "feed": "ai",
+    "source": "EA Forum",
+    "title": "The Goodhart Singularity",
+    "url": "https://forum.effectivealtruism.org/posts/Doew7ieJ3XACfovKs/the-goodhart-singularity",
+    "beliefUpdate": "Short-timeline datacenter-internal recursive-improvement scenarios should be discounted; takeoff is throttled by real-world deployment.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 50,
+    "date": "2026-05-18",
+    "feed": "significant",
+    "source": "Al Jazeera",
+    "title": "Philippines launches VP Duterte impeachment trial",
+    "url": "https://www.aljazeera.com/news/2026/5/18/philippines-launches-vp-duterte-impeachment-trial-amid-political-division",
+    "beliefUpdate": "Major institutional test for Philippine governance and an under-covered destabilization risk in the Indo-Pacific.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 50,
+    "date": "2026-05-20",
+    "feed": "ai",
+    "source": "Future of Life Institute",
+    "title": "Magnifica Humanitas: Pope Leo XIV's first encyclical concerns AI",
+    "url": "https://futureoflife.org/religion/magnificent-humanity-the-popes-first-encyclical-concerns-ai/",
+    "beliefUpdate": "AI-safety coalition-building gains a major institutional ally with global moral authority and billion-Catholic distribution scale; the policy debate gains a religious-ethics axis previously conducted in secular terms.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 45,
+    "date": "2026-05-08",
+    "feed": "general",
+    "source": "Bentham's Bulldog",
+    "title": "Dan Hendrycks' Moral Theory Is Very Implausible",
+    "url": "https://benthams.substack.com/p/dan-hendrycks-moral-theory-is-very",
+    "beliefUpdate": "Eigenism has counterexample-class problems severe enough that AI-safety actors who treated it as a candidate moral foundation should downgrade it.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 45,
+    "date": "2026-05-11",
+    "feed": "ai",
+    "source": "LessWrong",
+    "title": "How the AI Labs Make Profit (Maybe, Eventually)",
+    "url": "https://www.lesswrong.com/posts/ARRe4qjcuaRDBfARc/how-the-ai-labs-make-profit-maybe-eventually",
+    "beliefUpdate": "API-revenue projections likely overstate the long-run monetization path; equilibrium more likely is labs as vertical operators (trading, drug discovery).",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 45,
+    "date": "2026-05-21",
+    "feed": "ai",
+    "source": "Bentham's Bulldog",
+    "title": "AI Discourse is Haunted by Presentism Bias",
+    "url": "https://benthams.substack.com/p/ai-discourse-is-haunted-by-presentism",
+    "beliefUpdate": "Marginal AI-advocacy effort should redirect from rebutting present-day-impact complaints toward concretizing future capability trajectories; the present-vs-future framing is itself a tractable communications target.",
+    "archivedOn": "2026-05-25"
+  },
+  {
+    "score": 45,
+    "date": "2026-05-21",
+    "feed": "general",
+    "source": "EA Forum",
+    "title": "EA sexual harassment: Where's the evidence we're worse than baseline?",
+    "url": "https://forum.effectivealtruism.org/posts/Gr3owHS3fyDfnZ3nb/ea-sexual-harassment-where-s-the-evidence-we-re-worse-than",
+    "beliefUpdate": "The 'EA has worse sexual-harassment than baseline' prior should be downgraded given numerical comparators (EA 0.03–0.13% vs university 0.6–2% disclosure rates); debate should pivot to undercount-rate comparisons.",
+    "archivedOn": "2026-05-25"
+  }
+]

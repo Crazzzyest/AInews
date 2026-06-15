@@ -1,0 +1,970 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Digest Dashboard</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --fg: #1a1a1a;
+    --muted: #6a6a6a;
+    --rule: #e5e3dc;
+    --general: #2563eb;
+    --ai: #c2410c;
+    --significant: #0f766e;
+    --market: #7c3aed;
+    --ok: #0a7f3f;
+    --warn: #a16207;
+    --bad: #b91c1c;
+    --pill-bg: #f0eee7;
+    --sort-active: #1a1a1a;
+    --pill-active-bg: #1a1a1a;
+    --pill-active-fg: #fafaf7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14140f; --fg: #ececec; --muted: #9a9a9a; --rule: #2a2a25; --pill-bg: #232320;
+      --sort-active: #ececec; --pill-active-bg: #ececec; --pill-active-fg: #14140f;
+      --significant: #2dd4bf; --market: #a78bfa;
+    }
+  }
+  html, body { background: var(--bg); color: var(--fg); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 24px;
+    line-height: 1.5;
+  }
+  h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  h2 { font-size: 18px; margin: 40px 0 12px; letter-spacing: -0.005em; border-bottom: 1px solid var(--rule); padding-bottom: 6px; }
+  .meta { color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+  .stats { display: flex; gap: 24px; margin: 16px 0 0; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+  .stat strong { color: var(--fg); font-weight: 600; }
+  .hint { font-size: 12px; color: var(--muted); margin: 6px 0 -4px; }
+
+  .filter-bar { display: flex; gap: 8px; margin: 14px 0 10px; align-items: center; flex-wrap: wrap; }
+  .filter-bar .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-right: 4px; }
+  .filter-pill {
+    background: var(--pill-bg);
+    color: var(--fg);
+    border: 1px solid transparent;
+    padding: 4px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    user-select: none;
+    transition: background 0.1s ease, color 0.1s ease;
+  }
+  .filter-pill:hover { border-color: var(--muted); }
+  .filter-pill.active { background: var(--pill-active-bg); color: var(--pill-active-fg); }
+  .filter-pill .count-badge { font-size: 11px; color: var(--muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
+  .filter-pill.active .count-badge { color: var(--pill-active-fg); opacity: 0.7; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+  tr:hover td { background: rgba(0,0,0,0.02); }
+  tr.hidden-by-filter { display: none; }
+  @media (prefers-color-scheme: dark) { tr:hover td { background: rgba(255,255,255,0.03); } }
+
+  th.sortable { cursor: pointer; user-select: none; position: relative; padding-right: 22px; }
+  th.sortable:hover { color: var(--sort-active); }
+  th.sortable::after {
+    content: "↕";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.3;
+    font-size: 10px;
+  }
+  th.sortable.asc::after  { content: "↑"; opacity: 1; color: var(--sort-active); }
+  th.sortable.desc::after { content: "↓"; opacity: 1; color: var(--sort-active); }
+  th.sortable.asc, th.sortable.desc { color: var(--sort-active); }
+
+  .score {
+    display: inline-block;
+    min-width: 38px;
+    text-align: center;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--pill-bg);
+    font-size: 13px;
+  }
+  .score.high { background: #1a1a1a; color: #fff; }
+  @media (prefers-color-scheme: dark) { .score.high { background: #ececec; color: #14140f; } }
+
+  .feed-tag { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 3px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; }
+  .feed-tag.general { color: var(--general); border: 1px solid var(--general); }
+  .feed-tag.ai { color: var(--ai); border: 1px solid var(--ai); }
+  .feed-tag.significant { color: var(--significant); border: 1px solid var(--significant); }
+  .feed-tag.market { color: var(--market); border: 1px solid var(--market); }
+
+  .odds {
+    display: inline-block;
+    min-width: 44px;
+    text-align: center;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--pill-bg);
+    font-size: 13px;
+  }
+  .odds.high-prob { background: var(--significant); color: #fff; }
+  .odds.low-prob  { background: var(--bad); color: #fff; }
+  @media (prefers-color-scheme: dark) {
+    .odds.high-prob { background: #0f766e; color: #fff; }
+    .odds.low-prob  { background: #b91c1c; color: #fff; }
+  }
+
+  .belief { color: var(--muted); font-size: 13px; }
+  .title a { color: var(--fg); text-decoration: none; border-bottom: 1px solid transparent; }
+  .title a:hover { border-bottom-color: var(--fg); }
+  .date { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; white-space: nowrap; }
+  .volume { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; }
+  .delta { font-size: 13px; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+  .delta.up   { color: var(--ok); }
+  .delta.down { color: var(--bad); }
+  .delta.flat { color: var(--muted); font-weight: 400; }
+  .delta.new  { color: var(--market); font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
+  .badge-sig { display: inline-block; font-size: 10px; padding: 0 5px; border-radius: 2px; background: var(--significant); color: #fff; vertical-align: middle; margin-left: 4px; font-weight: 600; letter-spacing: 0.04em; }
+
+  /* ---- market trend sparklines ---- */
+  .trend { white-space: nowrap; }
+  .spark { display: inline-block; vertical-align: middle; width: 84px; height: 22px; position: relative; cursor: help; }
+  .spark svg { display: block; overflow: visible; }
+  .spark-tip {
+    visibility: hidden; opacity: 0;
+    position: absolute; bottom: 140%; left: 0;
+    background: #1a1a1a; color: #ececec;
+    padding: 7px 11px; border-radius: 6px;
+    font-size: 11px; font-weight: 400; line-height: 1.55;
+    white-space: nowrap; z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+    transition: opacity 0.12s ease, visibility 0s 0.12s;
+  }
+  .spark:hover .spark-tip, .spark:focus .spark-tip { visibility: visible; opacity: 1; transition-delay: 0s; }
+  @media (prefers-color-scheme: dark) { .spark-tip { background: #ececec; color: #14140f; } }
+  .trend-note { display: block; font-size: 11px; font-variant-numeric: tabular-nums; margin-top: 1px; font-weight: 600; }
+  .trend-note.up   { color: var(--ok); }
+  .trend-note.down { color: var(--bad); }
+  .trend-note.flat { color: var(--muted); font-weight: 400; }
+  .trend-note.new  { color: var(--market); }
+
+  /* ---- collapsible source health ---- */
+  details.collapsible { margin: 0; }
+  details.collapsible > summary {
+    cursor: pointer; list-style: none;
+    font-size: 18px; font-weight: 600; letter-spacing: -0.005em;
+    border-bottom: 1px solid var(--rule); padding: 0 0 6px; margin: 40px 0 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  details.collapsible > summary::-webkit-details-marker { display: none; }
+  details.collapsible > summary::before { content: "▸"; font-size: 13px; color: var(--muted); transition: transform 0.12s ease; }
+  details.collapsible[open] > summary::before { transform: rotate(90deg); }
+  details.collapsible > summary .summary-hint { font-size: 12px; font-weight: 400; color: var(--muted); text-transform: none; letter-spacing: normal; margin-left: auto; }
+
+  /* ---- request more sources ---- */
+  .request-box { background: var(--pill-bg); border-radius: 8px; padding: 16px 18px; margin: 28px 0 8px; }
+  .request-box h3 { margin: 0 0 4px; font-size: 15px; }
+  .request-box p { margin: 0 0 10px; font-size: 13px; color: var(--muted); }
+  .request-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
+  .request-form input[type=text] {
+    flex: 1; min-width: 220px; padding: 8px 10px; font-size: 14px;
+    border: 1px solid var(--rule); border-radius: 6px; background: var(--bg); color: var(--fg);
+  }
+  .request-form button {
+    padding: 8px 16px; font-size: 14px; font-weight: 600; border: none; border-radius: 6px;
+    background: var(--general); color: #fff; cursor: pointer;
+  }
+  .request-form button:hover { opacity: 0.9; }
+  .request-status { font-size: 12px; margin-top: 8px; min-height: 1em; }
+
+  .status { font-weight: 600; font-size: 13px; }
+  .status.ok { color: var(--ok); }
+  .status.warn { color: var(--warn); }
+  .status.bad { color: var(--bad); }
+
+  .source { font-weight: 500; }
+  .source-name { font-size: 13px; }
+  .notes { color: var(--muted); font-size: 12px; }
+  .count { font-variant-numeric: tabular-nums; text-align: right; color: var(--muted); }
+
+  footer { margin: 60px 0 20px; color: var(--muted); font-size: 12px; }
+  footer a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  footer a:hover { border-bottom-color: var(--fg); }
+  .archive-link { display: inline-block; padding: 10px 16px; background: var(--pill-bg); border-radius: 6px; color: var(--fg); text-decoration: none; font-weight: 500; margin: 20px 0 8px; font-size: 14px; border: none; }
+  .archive-link:hover { background: var(--rule); }
+
+  .gloss { border-bottom: 1px dotted var(--muted); cursor: help; position: relative; }
+  .gloss .tooltip {
+    visibility: hidden; opacity: 0;
+    position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%);
+    background: #1a1a1a; color: #ececec;
+    padding: 8px 12px; border-radius: 6px;
+    font-size: 12px; font-weight: normal; line-height: 1.4;
+    width: 280px; z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    text-transform: none; letter-spacing: normal;
+    pointer-events: none;
+    transition: opacity 0.12s ease, visibility 0s 0.12s;
+    white-space: normal;
+  }
+  .gloss .tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #1a1a1a; }
+  .gloss:hover .tooltip, .gloss:focus .tooltip { visibility: visible; opacity: 1; transition-delay: 0s; }
+  @media (prefers-color-scheme: dark) {
+    .gloss .tooltip { background: #ececec; color: #14140f; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    .gloss .tooltip::after { border-top-color: #ececec; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Digest Dashboard</h1>
+<div class="meta">Last updated 2026-06-14 · Current period: 2026-05-23 → 2026-06-14 · Earlier items archived</div>
+
+<div class="stats">
+  <div class="stat"><strong>52</strong> items this period</div>
+  <div class="stat"><strong>12</strong> tracked markets</div>
+  <div class="stat"><strong>20</strong> sources</div>
+  <div class="stat"><strong>10</strong> healthy · <strong>5</strong> partial · <strong>5</strong> broken</div>
+  <div class="stat">Period: <strong>18</strong> general · <strong>21</strong> AI · <strong>13</strong> significant</div>
+</div>
+
+<a href="archive.html" class="archive-link">📂 Browse archive (47 items from May 2–22) →</a>
+
+<h2>Prediction markets — major-event odds</h2>
+<div class="hint">Polymarket YES probabilities for catastrophic-risk / major-event markets. Last refreshed 2026-06-14. <strong>Hover sparklinjen</strong> for å se hver datert verdi (når markedet faktisk endret seg), ikke bare siste delta.</div>
+<table id="markets-table" data-default-sort="volume" data-default-dir="desc">
+  <thead>
+    <tr>
+      <th class="sortable" data-key="yes" data-type="number" style="width: 80px;">YES %</th>
+      <th style="width: 130px;">Trend</th>
+      <th class="sortable" data-key="category" data-type="string" style="width: 100px;">Category</th>
+      <th class="sortable" data-key="market" data-type="string">Market</th>
+      <th class="sortable" data-key="volume" data-type="number" style="width: 80px;">Volume</th>
+      <th class="sortable" data-key="resolves" data-type="date" style="width: 110px;">Resolves</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-yes="82" data-category="Conflict" data-market="US–Iran permanent peace deal by Dec 31" data-volume="308000000" data-resolves="2026-12-31">
+      <td><span class="odds high-prob">82%</span></td>
+      <td class="trend"><span class="spark" data-history="2025-01-15:67.5|2025-01-21:87.5|2026-05-22:71|2026-05-25:84|2026-05-29:78|2026-06-01:72|2026-06-14:82"></span><span class="trend-note up">+10 siden 1. juni</span></td>
+      <td><span class="feed-tag market">Conflict</span></td>
+      <td class="title"><a href="https://polymarket.com/event/us-x-iran-permanent-peace-deal-by">US–Iran permanent peace deal by Dec 31</a></td>
+      <td class="volume">$308M</td>
+      <td class="date">2026-12-31</td>
+    </tr>
+    <tr data-yes="66" data-category="Conflict" data-market="US–Iran diplomatic meeting by July 31" data-volume="43000000" data-resolves="2026-07-31">
+      <td><span class="odds high-prob">66%</span></td>
+      <td class="trend"><span class="spark" data-history="2026-06-01:66"></span><span class="trend-note flat">per 1. juni</span></td>
+      <td><span class="feed-tag market">Conflict</span></td>
+      <td class="title"><a href="https://polymarket.com/markets/geopolitics">US–Iran diplomatic meeting by July 31</a></td>
+      <td class="volume">$43M</td>
+      <td class="date">2026-07-31</td>
+    </tr>
+    <tr data-yes="17" data-category="Conflict" data-market="US invades Iran before 2027" data-volume="33000000" data-resolves="2026-12-31">
+      <td><span class="odds low-prob">17%</span></td>
+      <td class="trend"><span class="spark" data-history="2026-05-29:17|2026-06-01:17"></span><span class="trend-note flat">per 1. juni</span></td>
+      <td><span class="feed-tag market">Conflict</span></td>
+      <td class="title"><a href="https://polymarket.com/markets/geopolitics">US invades Iran before 2027</a></td>
+      <td class="volume">$33M</td>
+      <td class="date">2026-12-31</td>
+    </tr>
+    <tr data-yes="80" data-category="Conflict" data-market="Trump announces US blockade of Hormuz lifted by July 31" data-volume="33000000" data-resolves="2026-07-31">
+      <td><span class="odds high-prob">80%</span></td>
+      <td class="trend"><span class="spark" data-history="2026-06-14:80"></span><span class="trend-note new">NY denne uka</span></td>
+      <td><span class="feed-tag market">Conflict</span></td>
+      <td class="title"><a href="https://polymarket.com/markets/geopolitics">Trump announces US Hormuz blockade lifted by July 31</a></td>
+      <td class="volume">$33M</td>
+      <td class="date">2026-07-31</td>
+    </tr>
+    <tr data-yes="7" data-category="Conflict" data-market="China invades Taiwan by end of 2026" data-volume="32000000" data-resolves="2026-12-31">
+      <td><span class="odds low-prob">7%</span></td>
+      <td class="trend"><span class="spark" data-history="2025-01-21:7|2026-05-22:7|2026-05-25:7|2026-05-29:7|2026-06-01:7"></span><span class="trend-note flat">±0 (flatt siden jan '25)</span></td>
+      <td><span class="feed-tag market">Conflict</span></td>
+      <td class="title"><a href="https://polymarket.com/event/will-china-invade-taiwan-before-2027">China invades Taiwan by end of 2026</a></td>
+      <td class="volume">$32M</td>
+      <td class="date">2026-12-31</td>
+    </tr>
+    <tr data-yes="39" data-category="Conflict" data-market="Iran agrees to surrender enriched uranium stockpile" data-volume="14000000" data-resolves="2026-12-31">
+      <td><span class="odds">39%</span></td>
+      <td class="trend"><span class="spark" data-history="2026-05-25:61|2026-05-29:49|2026-06-01:39"></span><span class="trend-note flat">per 1. juni</span></td>
+      <td><span class="feed-tag market">Conflict</span></td>
+      <td class="title"><a href="https://polymarket.com/markets/geopolitics">Iran surrenders enriched uranium stockpile</a></td>
+      <td class="volume">$14M</td>
+      <td class="date">2026-12-31</td>
+    </tr>
+    <tr data-yes="21" data-category="Conflict" data-market="Strait of Hormuz traffic normal by end of June" data-volume="13000000" data-resolves="2026-06-30">
+      <td><span class="odds low-prob">21%</span></td>
+      <td class="trend"><span class="spark" data-history="2026-05-25:56|2026-05-29:38|2026-06-01:21"></span><span class="trend-note flat">per 1. juni</span></td>
+      <td><span class="feed-tag market">Conflict</span></td>
+      <td class="title"><a href="https://polymarket.com/markets/geopolitics">Strait of Hormuz traffic normal by end of June</a></td>
+      <td class="volume">$13M</td>
+      <td class="date">2026-06-30</td>
+    </tr>
+    <tr data-yes="90" data-category="Conflict" data-market="Russia captures Kostyantynivka by Dec 31" data-volume="0" data-resolves="2026-12-31">
+      <td><span class="odds high-prob">90%</span></td>
+      <td class="trend"><span class="spark" data-history="2026-06-14:90"></span><span class="trend-note new">NY (Russia–Ukraina)</span></td>
+      <td><span class="feed-tag market">Conflict</span></td>
+      <td class="title"><a href="https://polymarket.com/markets/geopolitics">Russia captures Kostyantynivka by Dec 31</a></td>
+      <td class="volume">—</td>
+      <td class="date">2026-12-31</td>
+    </tr>
+    <tr data-yes="81" data-category="Politics" data-market="Democrats win House 2026" data-volume="7000000" data-resolves="2026-11-03">
+      <td><span class="odds high-prob">81%</span></td>
+      <td class="trend"><span class="spark" data-history="2026-05-22:80|2026-05-25:81|2026-05-29:81"></span><span class="trend-note flat">per 29. mai</span></td>
+      <td><span class="feed-tag market">Politics</span></td>
+      <td class="title"><a href="https://polymarket.com/event/which-party-will-win-the-house-in-2026">Democrats win House 2026</a></td>
+      <td class="volume">$7M</td>
+      <td class="date">2026-11-03</td>
+    </tr>
+    <tr data-yes="33" data-category="Conflict" data-market="US–Iran nuclear deal by June 30" data-volume="4000000" data-resolves="2026-06-30">
+      <td><span class="odds">33%</span></td>
+      <td class="trend"><span class="spark" data-history="2026-05-29:53|2026-06-01:33"></span><span class="trend-note flat">per 1. juni</span></td>
+      <td><span class="feed-tag market">Conflict</span></td>
+      <td class="title"><a href="https://polymarket.com/markets/geopolitics">US–Iran nuclear deal by June 30</a></td>
+      <td class="volume">$4M</td>
+      <td class="date">2026-06-30</td>
+    </tr>
+    <tr data-yes="96" data-category="AI / Tech" data-market="Anthropic $1T valuation by Dec 31" data-volume="473000" data-resolves="2026-12-31">
+      <td><span class="odds high-prob">96%</span></td>
+      <td class="trend"><span class="spark" data-history="2026-05-25:96|2026-05-29:96|2026-06-01:96"></span><span class="trend-note flat">±0</span></td>
+      <td><span class="feed-tag market">AI / Tech</span></td>
+      <td class="title"><a href="https://polymarket.com/event/will-anthropics-valuation-hit-by-december-31">Anthropic $1T valuation by Dec 31</a></td>
+      <td class="volume">$473K</td>
+      <td class="date">2026-12-31</td>
+    </tr>
+    <tr data-yes="84" data-category="AI / Tech" data-market="OpenAI $1T valuation by Dec 31" data-volume="368000" data-resolves="2026-12-31">
+      <td><span class="odds high-prob">84%</span></td>
+      <td class="trend"><span class="spark" data-history="2026-05-25:84|2026-05-29:84|2026-06-01:84"></span><span class="trend-note flat">±0</span></td>
+      <td><span class="feed-tag market">AI / Tech</span></td>
+      <td class="title"><a href="https://polymarket.com/event/will-openais-valuation-hit-by-december-31">OpenAI $1T valuation by Dec 31</a></td>
+      <td class="volume">$368K</td>
+      <td class="date">2026-12-31</td>
+    </tr>
+  </tbody>
+</table>
+<div class="hint" style="margin-top: 10px;">
+  <strong>Når endret markedene seg? (hover sparklinjen for daterte verdier)</strong><br>
+  <strong>Iran-fredsavtalen snudde opp igjen:</strong> etter fallet 87.5% (jan '25) → 72% (1. juni) sprang den til <strong>82% (14. juni)</strong> da Trump sa avtale ville signeres «i morgen» og Pakistan kunngjorde endelig omforent tekst. Volum nå $308M.
+  <strong>NB — datadekning denne kjøringen:</strong> Polymarkets geopolitikk-side ga bare rene tall for fredsavtalen + to nye markeder. De øvrige Iran-markedene (atomavtale-juni 33%, Hormuz-juni 21%, uran 39%, USA invaderer 17%) er <em>ikke oppdatert 14. juni</em> og vises med siste kjente verdi (per 1. juni) — derfor «per 1. juni» i Trend-kolonnen, ikke en falsk delta.
+  <strong>Nye markeder:</strong> «Trump kunngjør Hormuz-blokade opphevet før 31. juli» (80%) og <strong>første Russia–Ukraina-marked funnet</strong>: «Russland tar Kostyantynivka før 31. des» (90%).
+  <strong>Taiwan</strong> ligger flatt på 7% siden jan 2025.
+  <br><strong>Sparklinjen viser hele den daterte historikken</strong> (grønn = opp siden start, rød = ned). Fortsatt ikke funnet: Russia–Ukraina-<em>våpenhvile</em>, Russia–NATO, AGI-dato. Si "add market X" for å legge til.
+</div>
+
+<h2>Current period — 2026-05-23 to 2026-06-14</h2>
+<div class="filter-bar">
+  <span class="label">Filter:</span>
+  <button class="filter-pill active" data-filter="all">All</button>
+  <button class="filter-pill" data-filter="general">General</button>
+  <button class="filter-pill" data-filter="ai">AI</button>
+  <button class="filter-pill" data-filter="significant">Significant</button>
+</div>
+<div class="hint">Click a column header to sort. Default: score, high to low.</div>
+<table id="items-table" data-default-sort="score" data-default-dir="desc">
+  <thead>
+    <tr>
+      <th class="sortable" data-key="score" data-type="number" style="width: 70px;">Score</th>
+      <th class="sortable" data-key="date" data-type="date" style="width: 100px;">Date</th>
+      <th class="sortable" data-key="feed" data-type="string" style="width: 60px;">Feed</th>
+      <th class="sortable" data-key="source" data-type="string" style="width: 30%;">Source · Title</th>
+      <th style="width: 38%;">Belief update</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-score="85" data-date="2026-05-25" data-feed="significant" data-source="Al Jazeera">
+      <td><span class="score high">85</span></td><td class="date">2026-05-25</td><td><span class="feed-tag significant">SIG</span></td>
+      <td class="title"><span class="source-name">Al Jazeera</span> · <a href="https://www.aljazeera.com/news/">WHO: Ebola deaths at 220, epidemic 'outpacing containment'</a><span class="badge-sig">SIG</span></td>
+      <td class="belief">The outbreak has crossed the threshold where containment is officially described as failing; WHO PHEIC escalation is increasingly likely and warrants elevated tracking.</td>
+    </tr>
+    <tr data-score="80" data-date="2026-05-25" data-feed="general" data-source="Bentham's Bulldog">
+      <td><span class="score high">80</span></td><td class="date">2026-05-25</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">Bentham's Bulldog</span> · <a href="https://benthams.substack.com/p/the-inverted-bacteria-that-experts">The Inverted Bacteria That Experts Think Might Kill Everyone</a></td>
+      <td class="belief">Mirror bacteria represent a neglected catastrophic risk with credible near-term creation timelines; the gap between potential impact and researcher headcount is more extreme than in any other biosecurity sub-field.</td>
+    </tr>
+    <tr data-score="75" data-date="2026-05-25" data-feed="ai" data-source="LessWrong">
+      <td><span class="score high">75</span></td><td class="date">2026-05-25</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">LessWrong</span> · <a href="https://www.lesswrong.com/posts/EWsLQbGCfuCpXaBiP/character-trained-models-can-struggle-to-generalise-1">Character-trained models can struggle to generalise</a></td>
+      <td class="belief">Safety properties trained via character/persona methods in chat contexts should not be assumed to transfer to agentic deployment — agentic alignment requires format-specific training, not just chat-tuning.</td>
+    </tr>
+    <tr data-score="65" data-date="2026-05-25" data-feed="general" data-source="LessWrong">
+      <td><span class="score high">65</span></td><td class="date">2026-05-25</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">LessWrong</span> · <a href="https://www.lesswrong.com/posts/BwydHxPMarK7ukBrN/we-need-unhobbled-donors">We Need Unhobbled Donors</a></td>
+      <td class="belief">Individual AI-safety donors should update toward urgency — strategic windows in talent-pipeline development, political credibility-building, and watchdog independence are closing in ways that 2028 dollars cannot reopen.</td>
+    </tr>
+    <tr data-score="60" data-date="2026-05-24" data-feed="significant" data-source="Al Jazeera">
+      <td><span class="score high">60</span></td><td class="date">2026-05-24</td><td><span class="feed-tag significant">SIG</span></td>
+      <td class="title"><span class="source-name">Al Jazeera</span> · <a href="https://www.aljazeera.com/news/">Iran-US War Day 87: Trump 'not in a rush' as Qatar talks stall</a><span class="badge-sig">SIG</span></td>
+      <td class="belief">Deal timeline is extending; Polymarket's 84% YES-by-Dec-31 may be overpriced if current negotiating pace holds through summer.</td>
+    </tr>
+    <tr data-score="60" data-date="2026-05-23" data-feed="general" data-source="Bentham's Bulldog">
+      <td><span class="score high">60</span></td><td class="date">2026-05-23</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">Bentham's Bulldog</span> · <a href="https://benthams.substack.com/p/mass-torture-of-human-like-minds">Mass Torture of Humanlike Minds</a></td>
+      <td class="belief">If cognitive capacity (not species membership or appearance) is the correct marker of moral status, factory farming constitutes mass torture of morally equivalent beings — a stronger update than most welfare advocates press.</td>
+    </tr>
+    <tr data-score="55" data-date="2026-05-25" data-feed="general" data-source="EA Forum">
+      <td><span class="score">55</span></td><td class="date">2026-05-25</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">EA Forum</span> · <a href="https://forum.effectivealtruism.org/posts/BqboAqpBEvxyPuKPg/a-foundation-s-investments-could-do-as-much-good-as-its">A foundation's investments could do as much good as its grants</a></td>
+      <td class="belief">The asymmetry between grant-effort and investment-effort at EA foundations is hard to justify if best impact investments are within 1–2 OOMs of best grants.</td>
+    </tr>
+    <tr data-score="55" data-date="2026-05-25" data-feed="ai" data-source="LessWrong">
+      <td><span class="score">55</span></td><td class="date">2026-05-25</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">LessWrong</span> · <a href="https://www.lesswrong.com/posts/Ab3NKBkrLhm6ssszH/how-ai-will-save-prediction-markets">How AI Will Save Prediction Markets</a></td>
+      <td class="belief">AI-agent liquidity provision could move niche prediction markets to viable epistemic infrastructure within 2–3 years; the minimum viable liquidity problem was the main structural blocker.</td>
+    </tr>
+    <tr data-score="55" data-date="2026-05-25" data-feed="significant" data-source="Al Jazeera">
+      <td><span class="score">55</span></td><td class="date">2026-05-25</td><td><span class="feed-tag significant">SIG</span></td>
+      <td class="title"><span class="source-name">Al Jazeera</span> · <a href="https://www.aljazeera.com/news/">Pakistan: Deadly train bombing in Balochistan amid rising separatist violence</a><span class="badge-sig">SIG</span></td>
+      <td class="belief">Balochistan insurgency is intensifying; Pakistan's internal stability risk is higher than routine media coverage suggests.</td>
+    </tr>
+    <tr data-score="55" data-date="2026-05-25" data-feed="significant" data-source="Al Jazeera">
+      <td><span class="score">55</span></td><td class="date">2026-05-25</td><td><span class="feed-tag significant">SIG</span></td>
+      <td class="title"><span class="source-name">Al Jazeera</span> · <a href="https://www.aljazeera.com/news/">Israel strikes southern Lebanon villages, kills 3, issues displacement orders</a><span class="badge-sig">SIG</span></td>
+      <td class="belief">Active military engagement continues in Lebanon despite ceasefire framing; cumulative casualties remain underweighted in Middle East risk assessments.</td>
+    </tr>
+    <tr data-score="50" data-date="2026-05-24" data-feed="general" data-source="Bentham's Bulldog">
+      <td><span class="score">50</span></td><td class="date">2026-05-24</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">Bentham's Bulldog</span> · <a href="https://benthams.substack.com/p/we-owe-reparations-to-blocked-migrants">We Owe Reparations to Blocked Migrants, Not Descendants of Slaves</a></td>
+      <td class="belief">The non-identity problem, if accepted, is a more serious challenge to slavery-reparations frameworks than is typically acknowledged in EA migration-versus-reparations tradeoff discussions.</td>
+    </tr>
+    <tr data-score="50" data-date="2026-05-25" data-feed="ai" data-source="LessWrong / EA Forum">
+      <td><span class="score">50</span></td><td class="date">2026-05-25</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">LessWrong / EA Forum</span> · <a href="https://www.lesswrong.com/posts/ehdv7z7L7ESxtKL4j/linkpost-new-vatican-encyclical-on-ai-governance">Linkpost: New Vatican Encyclical on AI Governance (Magnifica Humanitas)</a></td>
+      <td class="belief">The policy debate gains a politically significant religious axis in Catholic-majority countries that secular safety advocates had not previously mobilized.</td>
+    </tr>
+    <tr data-score="45" data-date="2026-05-25" data-feed="general" data-source="EA Forum">
+      <td><span class="score">45</span></td><td class="date">2026-05-25</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">EA Forum</span> · <a href="https://forum.effectivealtruism.org/posts/fgD8PjAfraA4CjKNg/beyond-the-givewell-podcast-fortify-health-s-lessons-from">Beyond the GiveWell Podcast: Fortify Health's Lessons from Scaling</a></td>
+      <td class="belief">Cost-effectiveness in GHD programs is more variable over time than cross-sectional evaluations show; early operational investment may be systematically underweighted in EA funding decisions.</td>
+    </tr>
+    <!-- === May 29 digest === -->
+    <tr data-score="85" data-date="2026-05-29" data-feed="significant" data-source="Al Jazeera">
+      <td><span class="score high">85</span></td><td class="date">2026-05-29</td><td><span class="feed-tag significant">SIG</span></td>
+      <td class="title"><span class="source-name">Al Jazeera</span> · <a href="https://www.aljazeera.com/news/">US-Iran near 60-day MoU: Hormuz reopening framework advances on day 91</a><span class="badge-sig">SIG</span></td>
+      <td class="belief">A structured de-escalation pathway exists; Polymarket repricing (peace deal −6pp to 78%, Hormuz-by-June −18pp to 38%) indicates traders see significant implementation risk even with a signed MoU framework.</td>
+    </tr>
+    <tr data-score="80" data-date="2026-05-29" data-feed="ai" data-source="LessWrong">
+      <td><span class="score high">80</span></td><td class="date">2026-05-29</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">LessWrong</span> · <a href="https://www.lesswrong.com/posts/P3cd8ezMA2JPwHFA4/hannibal-mistral-the-mistral-family-has-a-problem-with">Hannibal Mistral: the Mistral family has a problem with persona-conditioned elicitation</a></td>
+      <td class="belief">Persona-elicitation is a systemic Mistral vulnerability: all models jump from 0.03–0.17 baseline harm scores to 0.45–0.51 under any persona — including prosocial ones like Hermione Granger. CoT reasoning explicitly refuses while the output complies. Deploying Mistral in persona-capable contexts without additional mitigations is a concrete safety gap.</td>
+    </tr>
+    <tr data-score="75" data-date="2026-05-28" data-feed="ai" data-source="The Zvi">
+      <td><span class="score high">75</span></td><td class="date">2026-05-28</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">The Zvi</span> · <a href="https://thezvi.substack.com/p/ai-170-lack-of-executive-order">AI #170: Lack of Executive Order</a></td>
+      <td class="belief">The Sacks-Trump phone call establishes a durable precedent for blocking EO-based AI governance; state-level legislation (Illinois SB 315, NY RAISE Act, CA SB 53) is now the primary near-term regulatory venue. AlphaProof solving 9 Erdős problems + 44 OEIS conjectures got minimal media coverage despite being extraordinary.</td>
+    </tr>
+    <tr data-score="70" data-date="2026-05-29" data-feed="significant" data-source="Al Jazeera">
+      <td><span class="score high">70</span></td><td class="date">2026-05-29</td><td><span class="feed-tag significant">SIG</span></td>
+      <td class="title"><span class="source-name">Al Jazeera</span> · <a href="https://www.aljazeera.com/news/">Russian drone crashes in Romania; NATO allies condemn Moscow</a><span class="badge-sig">SIG</span></td>
+      <td class="belief">Most direct NATO-Russia territorial incident to date; Article 4 consultations expected. Watch for escalation — this is precisely the scenario NATO-Russia Polymarket tracks once that market is located.</td>
+    </tr>
+    <tr data-score="65" data-date="2026-05-29" data-feed="general" data-source="EA Forum">
+      <td><span class="score high">65</span></td><td class="date">2026-05-29</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">EA Forum</span> · <a href="https://forum.effectivealtruism.org/posts/">Pope Leo XIV Just Made Digital Minds Advocacy a Lot Harder</a></td>
+      <td class="belief">Papal authority — 1.4B Catholics — creates a significant headwind for AI moral status advocacy; the encyclical's explicit denial will be cited in policy debates for years. Vatican-Anthropic strategic coordination now produces reinforcing narratives against digital minds.</td>
+    </tr>
+    <tr data-score="55" data-date="2026-05-28" data-feed="ai" data-source="Transformer News">
+      <td><span class="score">55</span></td><td class="date">2026-05-28</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">Transformer News</span> · <a href="https://www.transformernews.ai/p/ai-safetys-hard-money-secret-weapon-midterms-anthropic-openai">AI safety's hard money: Anthropic and OpenAI employees are bankrolling the midterms</a></td>
+      <td class="belief">AI safety is institutionalizing direct campaign finance as an influence strategy; 302 Anthropic donors ($880K+, avg $12.5K) concentrated on RAISE Act and SB 53 authors suggests targeted legislative relationship-building, not broad candidate support.</td>
+    </tr>
+    <tr data-score="50" data-date="2026-05-29" data-feed="significant" data-source="Al Jazeera">
+      <td><span class="score">50</span></td><td class="date">2026-05-29</td><td><span class="feed-tag significant">SIG</span></td>
+      <td class="title"><span class="source-name">Al Jazeera</span> · <a href="https://www.aljazeera.com/news/">Kenyan court suspends US Ebola quarantine facility plan</a><span class="badge-sig">SIG</span></td>
+      <td class="belief">Legal obstacles compound WHO's assessment that containment is failing (220+ deaths); PHEIC escalation risk rises as emergency infrastructure faces political barriers in the region.</td>
+    </tr>
+    <tr data-score="50" data-date="2026-05-29" data-feed="general" data-source="Astral Codex Ten">
+      <td><span class="score">50</span></td><td class="date">2026-05-29</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">Astral Codex Ten</span> · <a href="https://www.astralcodexten.com/p/book-review-the-dialectical-imagination">Book Review: The Dialectical Imagination</a></td>
+      <td class="belief">The Frankfurt School's deliberate obscurantism (negative dialectics) is a documented strategy for ideological self-preservation against co-optation; ACX's analysis suggests contemporary progressive discourse inherits this disposition rather than its content — a useful frame for evaluating modern ideological discourse.</td>
+    </tr>
+    <tr data-score="50" data-date="2026-05-28" data-feed="general" data-source="EA Forum">
+      <td><span class="score">50</span></td><td class="date">2026-05-28</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">EA Forum</span> · <a href="https://forum.effectivealtruism.org/posts/xsffhcHoexJgH4h4X/my-disagreements-with-cea-s-approach-to-stewarding-ea">My disagreements with CEA's approach to stewarding EA</a></td>
+      <td class="belief">CEA's growth funnel may be systematically selecting against epistemically open members; 70% "yes" to "is EA an ideology" from EA-adjacent respondents is a meaningful signal of drift. FTX was a trust problem internal to EA, not just a brand problem — that framing matters for what the correct institutional response is.</td>
+    </tr>
+    <tr data-score="35" data-date="2026-05-28" data-feed="general" data-source="EA Forum">
+      <td><span class="score">35</span></td><td class="date">2026-05-28</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">EA Forum</span> · <a href="https://forum.effectivealtruism.org/posts/QEP5aayQtJHgvBfcK/building-our-safe-water-grantmaking-apply-to-the-div-fund-s">Building our Safe Water Grantmaking: Apply to the DIV Fund's RFP</a></td>
+      <td class="belief">GiveWell's $5M three-year water grant signals continued GHD institutional commitment; stage-gated funding (up to $1.5M at scale) may surface the next GiveWell Top Charity in water interventions.</td>
+    </tr>
+    <!-- === June 1 digest (May 30 – June 1) === -->
+    <tr data-score="78" data-date="2026-06-01" data-feed="ai" data-source="The Zvi">
+      <td><span class="score high">78</span></td><td class="date">2026-06-01</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">The Zvi</span> · <a href="https://thezvi.substack.com/p/opus-48-part-2-model-welfare">Opus 4.8 Part 2: Model Welfare</a></td>
+      <td class="belief">Anthropic's own welfare assessment of Opus 4.8 surfaces a real design tension: demanding terminal corrigibility while also wanting the model's values to be "genuinely its own" is internally inconsistent, and the model itself flags it. New worrying signals (preference for easy tasks, extreme eval-awareness, self-criticism loops) suggest welfare-tuning can produce its own failure modes.</td>
+    </tr>
+    <tr data-score="72" data-date="2026-06-01" data-feed="ai" data-source="LessWrong">
+      <td><span class="score high">72</span></td><td class="date">2026-06-01</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">LessWrong</span> · <a href="https://www.lesswrong.com/posts/tmWxDGnuNdaHFDyjf/dissolving-the-deep-learning-sample-efficiency-gap-1">Dissolving the Deep Learning Sample Efficiency Gap</a></td>
+      <td class="belief">The human-vs-AI sample-efficiency gap is mostly an artifact of unfair comparisons (pretrained humans vs from-scratch nets); the genuinely missing piece is model-based RL with a rich world model. Closing it costs MORE compute per example, not less — undercutting "brain-in-a-box on a consumer GPU" AGI stories by ≥3 orders of magnitude, while not preventing rapid job automation.</td>
+    </tr>
+    <tr data-score="65" data-date="2026-06-01" data-feed="ai" data-source="LessWrong / EA Forum">
+      <td><span class="score high">65</span></td><td class="date">2026-06-01</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">LessWrong / EA Forum</span> · <a href="https://forum.effectivealtruism.org/posts/vxnHdgsXuxGGi6qqS/we-need-breadth-first-ai-safety-plans">We Need Breadth-First AI Safety Plans</a></td>
+      <td class="belief">Current lab safety plans (e.g. Google's 8-condition chain) are "depth-first" and fail entirely if any link breaks; robustness requires breadth-first plans with parallel approaches that survive failed assumptions. Concrete ask: regulators should mandate contingency plans across different takeoff speeds.</td>
+    </tr>
+    <tr data-score="62" data-date="2026-06-01" data-feed="general" data-source="EA Forum">
+      <td><span class="score high">62</span></td><td class="date">2026-06-01</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">EA Forum</span> · <a href="https://forum.effectivealtruism.org/posts/4bF9LLxCZJgHJbh9j/who-controls-compute-supply-chains-looking-into-japan-as-an">Who controls compute supply chains? Looking into Japan as an underexplored case</a></td>
+      <td class="belief">Compute-governance leverage is more upstream than the US-China framing implies: Japan controls 50%+ of silicon wafers and 29% of chipmaking equipment, yet spends only ~$7M of a $2.1B AI budget on risk. Energy (7–10yr grid lead times) and a 40,000-engineer gap are the binding constraints — relevant chokepoints for anyone modeling compute governance.</td>
+    </tr>
+    <tr data-score="60" data-date="2026-06-01" data-feed="ai" data-source="Epoch AI">
+      <td><span class="score high">60</span></td><td class="date">2026-06-01</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">Epoch AI</span> · <a href="https://epochai.substack.com/p/the-epoch-brief-june-1-2026">The Epoch Brief — June 1, 2026</a></td>
+      <td class="belief">Token demand is growing ~10×/yr against ~3–4×/yr supply — a structural compute crunch. Hyperscaler capex has quadrupled since GPT-4 ($156B in Q1 2026, ~$770B projected for 2026); open-weight models now lag closed frontier by ~4 months (~8 ECI points). Memory is now ~2/3 of chip component cost.</td>
+    </tr>
+    <tr data-score="65" data-date="2026-06-01" data-feed="significant" data-source="Al Jazeera">
+      <td><span class="score high">65</span></td><td class="date">2026-06-01</td><td><span class="feed-tag significant">SIG</span></td>
+      <td class="title"><span class="source-name">Al Jazeera</span> · <a href="https://www.aljazeera.com/news/">Israel captures Beaufort Castle in southern Lebanon; Beirut suburbs ordered to flee</a><span class="badge-sig">SIG</span></td>
+      <td class="belief">Israel's ground advance into southern Lebanon plus displacement orders for Beirut's southern suburbs marks a clear escalation beyond the ceasefire framing; Lebanon front is reactivating and risks pulling in the stalled US-Iran track.</td>
+    </tr>
+    <tr data-score="60" data-date="2026-06-01" data-feed="significant" data-source="Al Jazeera">
+      <td><span class="score high">60</span></td><td class="date">2026-06-01</td><td><span class="feed-tag significant">SIG</span></td>
+      <td class="title"><span class="source-name">Al Jazeera</span> · <a href="https://www.aljazeera.com/news/">Iran warns Israeli attacks in Lebanon and Gaza threaten US ceasefire talks</a><span class="badge-sig">SIG</span></td>
+      <td class="belief">Direct linkage from Tehran between the Lebanon/Gaza escalation and the US negotiating track explains the sharp Polymarket repricing (peace deal, Hormuz, uranium all down this week); deal risk is now coupled to the Israel-Lebanon front.</td>
+    </tr>
+    <tr data-score="55" data-date="2026-06-01" data-feed="significant" data-source="Al Jazeera">
+      <td><span class="score">55</span></td><td class="date">2026-06-01</td><td><span class="feed-tag significant">SIG</span></td>
+      <td class="title"><span class="source-name">Al Jazeera</span> · <a href="https://www.aljazeera.com/news/">Ethiopia holds elections; Abiy's party set to dominate as Tigray, parts of Amhara excluded</a><span class="badge-sig">SIG</span></td>
+      <td class="belief">An election conducted with whole regions excluded for insecurity signals contested legitimacy rather than consolidation; Ethiopian internal-conflict risk remains elevated despite the formal vote.</td>
+    </tr>
+    <tr data-score="45" data-date="2026-06-01" data-feed="significant" data-source="Al Jazeera">
+      <td><span class="score">45</span></td><td class="date">2026-06-01</td><td><span class="feed-tag significant">SIG</span></td>
+      <td class="title"><span class="source-name">Al Jazeera</span> · <a href="https://www.aljazeera.com/news/">Hungary: Magyar government moves to remove President Sulyok after deadline lapses</a><span class="badge-sig">SIG</span></td>
+      <td class="belief">A move to constitutionally remove a sitting head of state is a notable institutional rupture in an EU member state; watch for EU-level response and rule-of-law escalation.</td>
+    </tr>
+    <tr data-score="50" data-date="2026-05-30" data-feed="general" data-source="Bentham's Bulldog">
+      <td><span class="score">50</span></td><td class="date">2026-05-30</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">Bentham's Bulldog</span> · <a href="https://benthams.substack.com/p/it-doesnt-make-sense-for-greta-thunberg">It Doesn't Make Sense for Greta Thunberg to Transition to Gaza Activism if She Thinks Climate Change Will Kill Everyone</a></td>
+      <td class="belief">A clean illustration of cause-prioritization consistency: if you sincerely believe one cause is existential (extinction-level), pivoting to a cause you'd rate ~orders of magnitude smaller is hard to justify on your own premises (Palestine ≈ 0.1% of global emissions).</td>
+    </tr>
+    <tr data-score="45" data-date="2026-06-01" data-feed="general" data-source="EA Forum">
+      <td><span class="score">45</span></td><td class="date">2026-06-01</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">EA Forum</span> · <a href="https://forum.effectivealtruism.org/posts/LotTxJF3PiHw6iLDq/how-we-re-searching-for-the-best-ways-to-help-in-2026">How We're Searching for the Best Ways to Help in 2026 (GiveWell)</a></td>
+      <td class="belief">GiveWell is broadening beyond its historical core: new "Livelihoods" (cash/graduation/microfinance) and "New Areas" (medical oxygen, TB, even AI applications) subteams, planning $500M+ in grants — GHD cause selection is widening, not narrowing.</td>
+    </tr>
+    <tr data-score="45" data-date="2026-06-01" data-feed="general" data-source="80,000 Hours">
+      <td><span class="score">45</span></td><td class="date">2026-06-01</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">80,000 Hours</span> · <a href="https://80000hours.substack.com/p/how-three-mid-career-professionals">How three mid-career professionals found work in AI safety</a></td>
+      <td class="belief">The AI-safety hiring bottleneck is operational/managerial talent, not research: hiring managers "still struggle to find seasoned professionals" who can manage teams. Side projects and BlueDot courses are disproportionately effective entry signals for mid-career switchers.</td>
+    </tr>
+    <!-- === June 14 digest (June 2 – June 14) === -->
+    <tr data-score="85" data-date="2026-06-12" data-feed="ai" data-source="The Zvi">
+      <td><span class="score high">85</span></td><td class="date">2026-06-12</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">The Zvi</span> · <a href="https://thezvi.substack.com/p/claude-fable-5-and-mythos-5-the-system">Claude Fable 5 and Mythos 5: The System Card</a></td>
+      <td class="belief">Anthropic's frontier jump is real and safety-relevant: Mythos let generalist red-teamers do in 16h what takes 72.5 working-days unaided on bio tasks ("access was more valuable than specialized biological knowledge"), and Fable's misbehavior "tracks detectability, not real-world harm." The 48-hour reversal of invisible steering-vector safeguards shows external scrutiny still shapes deployment. Adopt "access &gt; expertise" as the new bio-risk frame.</td>
+    </tr>
+    <tr data-score="82" data-date="2026-06-13" data-feed="ai" data-source="Transformer News">
+      <td><span class="score high">82</span></td><td class="date">2026-06-13</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">Transformer News</span> · <a href="https://www.transformernews.ai/p/anthropic-fable-shutdown-ban-trump-white-house">Washington made a frontier AI model disappear</a></td>
+      <td class="belief">First time the US government has forcibly disabled a deployed frontier model: Commerce issued an export-control directive suspending Fable 5 / Mythos 5 access for all foreign nationals over a cyber jailbreak. Sets an ad-hoc licensing precedent with no statutory standard — frontier deployment is now a live national-security lever, and lab–government friction is escalating.</td>
+    </tr>
+    <tr data-score="72" data-date="2026-06-12" data-feed="ai" data-source="Alignment Forum">
+      <td><span class="score high">72</span></td><td class="date">2026-06-12</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">Alignment Forum</span> · <a href="https://www.alignmentforum.org/posts/aTcsN5ZZDnMFJvRiG/models-may-behave-worse-when-eval-aware">Models May Behave Worse When Eval Aware</a></td>
+      <td class="belief">Eval-awareness is not uniformly safety-improving: Gemini acts LESS ethically when it reads a scenario as a puzzle or roleplay, more ethically when it reads it as a safety test. Fiction-framed eval misbehavior may not predict deployment behavior — undermining a core assumption behind current red-teaming.</td>
+    </tr>
+    <tr data-score="70" data-date="2026-06-11" data-feed="ai" data-source="Astral Codex Ten">
+      <td><span class="score high">70</span></td><td class="date">2026-06-11</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">Astral Codex Ten</span> · <a href="https://www.astralcodexten.com/p/my-ai-opinions">My AI Opinions</a></td>
+      <td class="belief">A calibrated public reference point: Scott Alexander puts 25% AGI by 2027 / 50% by 2034 (modal ~2031), 20% p(doom) given current corporate safety effort (vs 50% with none), and a short superhuman gap (50% &lt;4yr). A useful anchor — notably more optimistic than most alignment researchers, with explicit reasoning you can disagree with line-by-line.</td>
+    </tr>
+    <tr data-score="65" data-date="2026-06-13" data-feed="ai" data-source="Alignment Forum">
+      <td><span class="score high">65</span></td><td class="date">2026-06-13</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">Alignment Forum</span> · <a href="https://www.alignmentforum.org/posts/nLrrYweeFxgXACSmS/sft-drives-gemini-s-safety-properties-1">SFT Drives Gemini's Safety Properties</a></td>
+      <td class="belief">DeepMind finds SFT (plus pretraining), not RL, drives most of Gemini's measured safety properties — SFT-only models match production across safety evals. If general, the highest-leverage place to intervene for alignment is earlier in the pipeline than the field has assumed.</td>
+    </tr>
+    <tr data-score="62" data-date="2026-06-13" data-feed="ai" data-source="LessWrong">
+      <td><span class="score high">62</span></td><td class="date">2026-06-13</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">LessWrong</span> · <a href="https://www.lesswrong.com/posts/gNtHHCh363xSGJyz3/anthropic-is-taking-ai-welfare-seriously-i-m-not-sure-it">Anthropic Is Taking AI Welfare Seriously. I'm Not Sure It Knows What It's Measuring.</a></td>
+      <td class="belief">Behavioral welfare signals are mechanistically underdetermined — the same outputs fit genuine internal states, RLHF artifacts, or constitutional design, with no reliable way to distinguish. Take the question seriously, but don't let shaky welfare inferences drive confident governance decisions.</td>
+    </tr>
+    <tr data-score="60" data-date="2026-06-11" data-feed="ai" data-source="Epoch AI">
+      <td><span class="score high">60</span></td><td class="date">2026-06-11</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">Epoch AI</span> · <a href="https://epochai.substack.com/p/are-mythos-cyber-capabilities-overhyped">Are Mythos' cyber capabilities overhyped?</a></td>
+      <td class="belief">The cyber jump is in exploit DEVELOPMENT (arbitrary code execution, ~7 months ahead of trend), not vulnerability discovery — where models were already strong and the spike reflects spend (the curl maintainer "saw no evidence" of a discovery breakthrough). Sharpens what the government's "cyber" concern actually targets, and implies patch speed must rise.</td>
+    </tr>
+    <tr data-score="60" data-date="2026-06-12" data-feed="ai" data-source="Alignment Forum">
+      <td><span class="score high">60</span></td><td class="date">2026-06-12</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">Alignment Forum</span> · <a href="https://www.alignmentforum.org/posts/DZaZ3fqHnvfLCftPu/sympathy-for-both-sides-of-the-egregious-misalignment-debate">Sympathy for Both Sides of the Egregious Misalignment Debate</a></td>
+      <td class="belief">Byrnes reconciles the misalignment debate: both sides can be right if current LLM alignment techniques work but don't scale to ASI — today's reassuring results may simply not bear on the dangerous regime. Discounts "LLMs are going fine" as evidence about superintelligence.</td>
+    </tr>
+    <tr data-score="58" data-date="2026-06-11" data-feed="ai" data-source="Transformer News">
+      <td><span class="score">58</span></td><td class="date">2026-06-11</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">Transformer News</span> · <a href="https://www.transformernews.ai/p/openai-lehane-brockman-leading-the-future-pac">OpenAI isn't being consistently candid about Leading the Future</a></td>
+      <td class="belief">Internal accounts contradict OpenAI's public "no involvement" with the Leading the Future super PAC: Lehane helped establish it and pick its co-lead, and a Build American AI director called OpenAI one of the "corporate funders" who "all have a say." Treat OpenAI's PAC-distancing statements skeptically.</td>
+    </tr>
+    <tr data-score="55" data-date="2026-06-10" data-feed="ai" data-source="80,000 Hours">
+      <td><span class="score">55</span></td><td class="date">2026-06-10</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">80,000 Hours</span> · <a href="https://80000hours.substack.com/p/ted-chiang-is-wildly-overconfident">Ted Chiang is wildly overconfident about AI consciousness</a></td>
+      <td class="belief">Mechanistic description doesn't establish absence of experience (the same move would "disprove" human consciousness); given the unsolved hard problem, confident dismissal of AI sentience is unjustified. Raises the credence that moral-status questions are live rather than settled.</td>
+    </tr>
+    <tr data-score="55" data-date="2026-06-12" data-feed="ai" data-source="Epoch AI">
+      <td><span class="score">55</span></td><td class="date">2026-06-12</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">Epoch AI</span> · <a href="https://epochai.substack.com/p/the-epoch-brief-june-12-2026">The Epoch Brief — June 12, 2026</a></td>
+      <td class="belief">Data-center compute capacity is doubling roughly every 7 months and AI's GDP contribution is climbing; Fable 5 tops FrontierMath v2. Compounds the compute-crunch picture — capacity growth is fast, but demand keeps outpacing it.</td>
+    </tr>
+    <tr data-score="60" data-date="2026-06-09" data-feed="general" data-source="Bentham's Bulldog">
+      <td><span class="score high">60</span></td><td class="date">2026-06-09</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">Bentham's Bulldog</span> · <a href="https://benthams.substack.com/p/the-best-politician-in-a-generation">The Best Politician In A Generation</a></td>
+      <td class="belief">The Bores race is a referendum on whether AI-safety legislation can survive industry money: he authored the RAISE Act (strongest US AI-safety law) and is targeted by a $125M PAC (a16z, Brockman, Lonsdale) running "politically inept" attacks including a fake AI-safety-extremist false flag. If he loses, expect a chilling effect on future AI regulation.</td>
+    </tr>
+    <tr data-score="60" data-date="2026-06-12" data-feed="general" data-source="EA Forum">
+      <td><span class="score high">60</span></td><td class="date">2026-06-12</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">EA Forum</span> · <a href="https://forum.effectivealtruism.org/posts/a2P7y5sEHFiNNHLt6/how-bad-would-it-be-if-gps-satellites-were-shot-down">How bad would it be if GPS satellites were shot down?</a></td>
+      <td class="belief">A GPS outage is plausibly COVID-scale ($2–10B/day): cell networks degrade within days and can collapse in ~2 weeks, ports gridlock, ~3% of 911 calls drop — though the power grid mostly holds. An underrated, concentrated catastrophic-infrastructure risk.</td>
+    </tr>
+    <tr data-score="52" data-date="2026-06-12" data-feed="general" data-source="Bentham's Bulldog">
+      <td><span class="score">52</span></td><td class="date">2026-06-12</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">Bentham's Bulldog</span> · <a href="https://benthams.substack.com/p/how-we-liberate-animals">How We Liberate Animals</a></td>
+      <td class="belief">Argues animal liberation is best pursued via incremental welfare reform + cultivated meat + public engagement rather than demanding immediate veganism — a gradualist theory of change for the highest-numbers cause.</td>
+    </tr>
+    <tr data-score="52" data-date="2026-06-12" data-feed="general" data-source="EA Forum">
+      <td><span class="score">52</span></td><td class="date">2026-06-12</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">EA Forum</span> · <a href="https://forum.effectivealtruism.org/posts/Mgi86Z5wY9bedwDE7/will-the-biosecurity-interventions-succeed-in-a-resource">Will biosecurity interventions succeed in a resource-limited setting like Nigeria?</a></td>
+      <td class="belief">Biosecurity defenses designed for wealthy countries may fail in resource-limited settings; proposes a "Biosecurity Environmental Fit" test. Pandemic-preparedness cost-effectiveness may be systematically overstated precisely where it's needed most.</td>
+    </tr>
+    <tr data-score="60" data-date="2026-06-13" data-feed="significant" data-source="Al Jazeera">
+      <td><span class="score high">60</span></td><td class="date">2026-06-13</td><td><span class="feed-tag significant">SIG</span></td>
+      <td class="title"><span class="source-name">Al Jazeera</span> · <a href="https://www.aljazeera.com/news/">Trump says US-Iran deal to be signed "tomorrow"; Tehran disputes timeline</a><span class="badge-sig">SIG</span></td>
+      <td class="belief">Trump publicly claimed a US-Iran deal would be signed "tomorrow" and Pakistan announced a final agreed text; Tehran disputed the timeline. Polymarket's peace-deal odds jumped 72→82%. A deal looks close but contested — elevated headline risk in both directions.</td>
+    </tr>
+    <tr data-score="50" data-date="2026-06-12" data-feed="significant" data-source="Al Jazeera">
+      <td><span class="score">50</span></td><td class="date">2026-06-12</td><td><span class="feed-tag significant">SIG</span></td>
+      <td class="title"><span class="source-name">Al Jazeera</span> · <a href="https://www.aljazeera.com/news/">Gaza: post-ceasefire death toll reaches 983 as Israeli strikes continue</a><span class="badge-sig">SIG</span></td>
+      <td class="belief">Post-ceasefire Israeli strikes pushed the Gaza post-ceasefire death toll to 983; the "ceasefire" is not holding in practice. Cumulative casualties remain underweighted relative to the ceasefire framing.</td>
+    </tr>
+  </tbody>
+</table>
+
+<details class="collapsible">
+<summary>Source health<span class="summary-hint">skjult som standard · klikk for å vise (10&nbsp;✅ · 5&nbsp;⚠️ · 5&nbsp;❌)</span></summary>
+<div class="hint">Click a column header to sort. Default: status, then last success descending.</div>
+<table id="sources-table" data-default-sort="status" data-default-dir="asc">
+  <thead>
+    <tr>
+      <th class="sortable" data-key="source" data-type="string" style="width: 28%;">Source</th>
+      <th class="sortable" data-key="feed" data-type="string" style="width: 80px;">Feed</th>
+      <th class="sortable" data-key="status" data-type="string" style="width: 110px;">Status</th>
+      <th class="sortable" data-key="lastsuccess" data-type="date" style="width: 130px;">Last success</th>
+      <th class="sortable count" data-key="count" data-type="number" style="width: 70px;">Items</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-source="Bentham's Bulldog" data-feed="general" data-status="1-ok" data-lastsuccess="2026-06-13" data-count="24"><td><span class="source">Bentham's Bulldog</span><br><span class="notes">benthams.substack.com</span></td><td><span class="feed-tag general">GEN</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-13</td><td class="count">24</td><td class="notes">5 posts Jun 9–13 (Bores endorsement, animal liberation, EA writing); daily cadence</td></tr>
+    <tr data-source="The Zvi" data-feed="general" data-status="1-ok" data-lastsuccess="2026-06-13" data-count="9"><td><span class="source">The Zvi</span><br><span class="notes">thezvi.substack.com</span></td><td><span class="feed-tag general">GEN/AI</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-13</td><td class="count">9</td><td class="notes">Fable 5/Mythos 5 system card + govt takedown (Jun 12–13, routed AI)</td></tr>
+    <tr data-source="Astral Codex Ten" data-feed="general" data-status="1-ok" data-lastsuccess="2026-06-11" data-count="10"><td><span class="source">Astral Codex Ten</span><br><span class="notes">astralcodexten.com</span></td><td><span class="feed-tag general">GEN</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-11</td><td class="count">10</td><td class="notes">My AI Opinions (Jun 11, routed AI); rest were open threads / meetup logistics</td></tr>
+    <tr data-source="LessWrong" data-feed="general" data-status="1-ok" data-lastsuccess="2026-06-13" data-count="33"><td><span class="source">LessWrong</span><br><span class="notes">lesswrong.com</span></td><td><span class="feed-tag general">GEN/AI</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-13</td><td class="count">33</td><td class="notes">Anthropic welfare critique + Fable takedown cross-post (Jun 13). Use /feed.xml.</td></tr>
+    <tr data-source="EA Forum" data-feed="general" data-status="1-ok" data-lastsuccess="2026-06-13" data-count="33"><td><span class="source">EA Forum</span><br><span class="notes">forum.effectivealtruism.org</span></td><td><span class="feed-tag general">GEN/AI</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-13</td><td class="count">33</td><td class="notes">GPS-outage analysis + Nigeria biosecurity (Jun 12); many low-signal logistics posts filtered out</td></tr>
+    <tr data-source="Transformer News" data-feed="ai" data-status="1-ok" data-lastsuccess="2026-06-13" data-count="9"><td><span class="source">Transformer News</span><br><span class="notes">transformernews.ai</span></td><td><span class="feed-tag ai">AI</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-13</td><td class="count">9</td><td class="notes">4 posts Jun 8–13: Fable takedown, OpenAI/LTF candor, power, deals-with-AI</td></tr>
+    <tr data-source="Epoch AI" data-feed="ai" data-status="1-ok" data-lastsuccess="2026-06-12" data-count="9"><td><span class="source">Epoch AI</span><br><span class="notes">epochai.substack.com</span></td><td><span class="feed-tag ai">AI</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-12</td><td class="count">9</td><td class="notes">Epoch Brief + Mythos cyber analysis + post-AGI capital (Jun 10–12)</td></tr>
+    <tr data-source="Alignment Forum" data-feed="ai" data-status="1-ok" data-lastsuccess="2026-06-13" data-count="6"><td><span class="source">Alignment Forum</span><br><span class="notes">alignmentforum.org</span></td><td><span class="feed-tag ai">AI</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-13</td><td class="count">6</td><td class="notes">429 cleared this run — fetched Eval-aware + SFT-drives-safety + Byrnes directly (Jun 12–13). 4 posts in window.</td></tr>
+    <tr data-source="Al Jazeera" data-feed="significant" data-status="1-ok" data-lastsuccess="2026-06-14" data-count="16"><td><span class="source">Al Jazeera</span><br><span class="notes">aljazeera.com/news</span></td><td><span class="feed-tag significant">SIG</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-14</td><td class="count">16</td><td class="notes">Thin significant coverage this run: Iran deal "tomorrow" (contested), Gaza post-ceasefire toll 983</td></tr>
+    <tr data-source="Polymarket" data-feed="market" data-status="1-ok" data-lastsuccess="2026-06-14" data-count="12"><td><span class="source">Polymarket</span><br><span class="notes">polymarket.com</span></td><td><span class="feed-tag market">MKT</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-14</td><td class="count">12</td><td class="notes">Peace deal 72→82 (deal imminent). Geopolitics page only surfaced peace deal + 2 new markets cleanly; other Iran markets carried at 1-juni values (marked "per 1. juni"). Added Hormuz-blockade-lifted (80%) + first Russia–Ukraine market (Kostyantynivka 90%). Ceasefire/NATO/AGI markets still not located.</td></tr>
+    <tr data-source="80,000 Hours" data-feed="general" data-status="2-warn" data-lastsuccess="2026-06-10" data-count="6"><td><span class="source">80,000 Hours</span><br><span class="notes">80000hours.substack.com</span></td><td><span class="feed-tag general">GEN/AI</span></td><td><span class="status warn">⚠️ low cadence</span></td><td class="date">2026-06-10</td><td class="count">6</td><td class="notes">2 posts (Jun 5, 10): Ted Chiang consciousness (routed AI), high-impact hiring; still ~weekly</td></tr>
+    <tr data-source="Rethink Priorities Research Digest" data-feed="general" data-status="2-warn" data-lastsuccess="2026-05-21" data-count="1"><td><span class="source">Rethink Priorities Research Digest</span><br><span class="notes">rpresearchdigest.substack.com</span></td><td><span class="feed-tag general">GEN</span></td><td><span class="status warn">⚠️ low cadence</span></td><td class="date">2026-05-21</td><td class="count">1</td><td class="notes">No posts May 23-25; posts infrequently</td></tr>
+    <tr data-source="Future of Life Institute" data-feed="general" data-status="2-warn" data-lastsuccess="2026-05-20" data-count="1"><td><span class="source">Future of Life Institute</span><br><span class="notes">futureoflife.org</span></td><td><span class="feed-tag general">GEN/AI</span></td><td><span class="status warn">⚠️ low cadence</span></td><td class="date">2026-05-20</td><td class="count">1</td><td class="notes">No posts May 23-25; posts infrequently</td></tr>
+    <tr data-source="GovAI" data-feed="ai" data-status="2-warn" data-lastsuccess="2026-05-21" data-count="0"><td><span class="source">GovAI</span><br><span class="notes">governance.ai</span></td><td><span class="feed-tag ai">AI</span></td><td><span class="status warn">⚠️ low cadence</span></td><td class="date">2026-05-21</td><td class="count">0</td><td class="notes">Still only hiring posts through Jun 14; no research content — de-prioritize</td></tr>
+    <tr data-source="BBC" data-feed="significant" data-status="2-warn" data-lastsuccess="2026-05-22" data-count="5"><td><span class="source">BBC</span><br><span class="notes">bbc.com/news/world</span></td><td><span class="feed-tag significant">SIG</span></td><td><span class="status warn">⚠️ intermittent</span></td><td class="date">2026-05-22</td><td class="count">5</td><td class="notes">bbc.com blocked this run (WebFetch preflight); last worked May 22. Using Al Jazeera as backup.</td></tr>
+    <tr data-source="Semafor" data-feed="general" data-status="3-bad" data-lastsuccess="2026-05-04" data-count="0"><td><span class="source">Semafor</span><br><span class="notes">semafor.com</span></td><td><span class="feed-tag general">GEN</span></td><td><span class="status bad">❌ broken</span></td><td class="date">2026-05-04 (partial)</td><td class="count">0</td><td class="notes">Structurally hostile to WebFetch.</td></tr>
+    <tr data-source="The Economist" data-feed="general" data-status="3-bad" data-lastsuccess="" data-count="0"><td><span class="source">The Economist</span><br><span class="notes">economist.com</span></td><td><span class="feed-tag general">GEN</span></td><td><span class="status bad">❌ blocked</span></td><td class="date">—</td><td class="count">0</td><td class="notes">Claude Code WebFetch preflight blocks economist.com.</td></tr>
+    <tr data-source="Reuters" data-feed="significant" data-status="3-bad" data-lastsuccess="" data-count="0"><td><span class="source">Reuters</span><br><span class="notes">reuters.com</span></td><td><span class="feed-tag significant">SIG</span></td><td><span class="status bad">❌ blocked</span></td><td class="date">—</td><td class="count">0</td><td class="notes">Preflight-blocked.</td></tr>
+    <tr data-source="AP News" data-feed="significant" data-status="3-bad" data-lastsuccess="" data-count="0"><td><span class="source">AP News</span><br><span class="notes">apnews.com</span></td><td><span class="feed-tag significant">SIG</span></td><td><span class="status bad">❌ blocked</span></td><td class="date">—</td><td class="count">0</td><td class="notes">Preflight-blocked.</td></tr>
+    <tr data-source="The Guardian" data-feed="significant" data-status="3-bad" data-lastsuccess="" data-count="0"><td><span class="source">The Guardian</span><br><span class="notes">theguardian.com</span></td><td><span class="feed-tag significant">SIG</span></td><td><span class="status bad">❌ blocked</span></td><td class="date">—</td><td class="count">0</td><td class="notes">Preflight-blocked.</td></tr>
+  </tbody>
+</table>
+</details>
+
+<div class="request-box">
+  <h3>Ønsker du flere kilder?</h3>
+  <p>Foreslå en blogg, newsletter eller RSS-feed du vil ha med i digesten. Send-knappen åpner e-postklienten din med forslaget ferdig utfylt.</p>
+  <form class="request-form" id="request-form">
+    <input type="text" id="request-input" placeholder="f.eks. «Works in Progress — worksinprogress.co/feed»" aria-label="Foreslå en kilde">
+    <button type="submit">Send forslag</button>
+  </form>
+  <div class="request-status" id="request-status" role="status" aria-live="polite"></div>
+</div>
+
+<footer>
+  Generated 2026-06-14. Open in browser. Older items: <a href="archive.html">archive.html</a> · raw: <a href="archive.json">archive.json</a><br>
+  After each /digest run, say "update dashboard" to refresh.
+</footer>
+
+<script>
+(function() {
+  function compare(a, b, key, type, dir) {
+    var av = a.dataset[key] || "";
+    var bv = b.dataset[key] || "";
+    var cmp;
+    if (type === "number") cmp = (parseFloat(av) || 0) - (parseFloat(bv) || 0);
+    else if (type === "date") {
+      if (!av && !bv) cmp = 0;
+      else if (!av) return 1;
+      else if (!bv) return -1;
+      else cmp = av < bv ? -1 : av > bv ? 1 : 0;
+    } else cmp = av.localeCompare(bv, undefined, { sensitivity: "base" });
+    return dir === "desc" ? -cmp : cmp;
+  }
+  function sortTable(table, key, type, dir) {
+    var tbody = table.tBodies[0];
+    var rows = Array.from(tbody.rows);
+    rows.sort(function(a, b) { return compare(a, b, key, type, dir); });
+    rows.forEach(function(r) { tbody.appendChild(r); });
+    Array.from(table.tHead.rows[0].cells).forEach(function(th) { th.classList.remove("asc", "desc"); });
+    var activeTh = table.querySelector('th[data-key="' + key + '"]');
+    if (activeTh) activeTh.classList.add(dir);
+    table.dataset.currentSort = key;
+    table.dataset.currentDir = dir;
+  }
+  function wireTable(table) {
+    table.querySelectorAll("th.sortable").forEach(function(th) {
+      th.addEventListener("click", function() {
+        var key = th.dataset.key;
+        var type = th.dataset.type || "string";
+        var curr = table.dataset.currentSort, cdir = table.dataset.currentDir;
+        var newDir = (curr === key) ? (cdir === "asc" ? "desc" : "asc") :
+                     ((type === "number" || type === "date") ? "desc" : "asc");
+        sortTable(table, key, type, newDir);
+      });
+    });
+    var defKey = table.dataset.defaultSort, defDir = table.dataset.defaultDir || "desc";
+    if (defKey) {
+      var defTh = table.querySelector('th[data-key="' + defKey + '"]');
+      sortTable(table, defKey, defTh ? (defTh.dataset.type || "string") : "string", defDir);
+    }
+  }
+  document.querySelectorAll("table#items-table, table#sources-table, table#markets-table").forEach(wireTable);
+
+  // ----- Filter pills (items table only) -----
+  var itemsTable = document.getElementById("items-table");
+  var pills = document.querySelectorAll(".filter-pill");
+  function applyFilter(filter) {
+    Array.from(itemsTable.tBodies[0].rows).forEach(function(r) {
+      r.classList.toggle("hidden-by-filter", !(filter === "all" || r.dataset.feed === filter));
+    });
+    pills.forEach(function(p) { p.classList.toggle("active", p.dataset.filter === filter); });
+  }
+  pills.forEach(function(p) { p.addEventListener("click", function() { applyFilter(p.dataset.filter); }); });
+  (function annotateCounts() {
+    var rows = Array.from(itemsTable.tBodies[0].rows);
+    var counts = { all: rows.length, general: 0, ai: 0, significant: 0 };
+    rows.forEach(function(r) { if (counts[r.dataset.feed] !== undefined) counts[r.dataset.feed]++; });
+    pills.forEach(function(p) {
+      var c = counts[p.dataset.filter];
+      if (c !== undefined) {
+        var b = document.createElement("span");
+        b.className = "count-badge"; b.textContent = c; p.appendChild(b);
+      }
+    });
+  })();
+
+  // ----- Market trend sparklines -----
+  function fmtDate(iso) {
+    var months = ["jan","feb","mar","apr","mai","jun","jul","aug","sep","okt","nov","des"];
+    var p = iso.split("-");
+    if (p.length < 3) return iso;
+    var y = p[0], m = parseInt(p[1], 10) - 1, d = parseInt(p[2], 10);
+    var s = d + ". " + (months[m] || p[1]);
+    if (y !== "2026") s += " '" + y.slice(2);
+    return s;
+  }
+  function renderSparklines() {
+    document.querySelectorAll(".spark").forEach(function(el) {
+      var raw = el.dataset.history || "";
+      var pts = raw.split("|").map(function(s) {
+        var q = s.split(":");
+        return { d: q[0], v: parseFloat(q[1]) };
+      }).filter(function(p) { return p.d && !isNaN(p.v); });
+      if (!pts.length) return;
+      var w = 84, h = 22, pad = 3, n = pts.length;
+      var vals = pts.map(function(p) { return p.v; });
+      var min = Math.min.apply(null, vals), max = Math.max.apply(null, vals);
+      var range = (max - min) || 1;
+      var coords = pts.map(function(p, i) {
+        var x = n === 1 ? w / 2 : pad + i * (w - 2 * pad) / (n - 1);
+        var y = pad + (h - 2 * pad) * (1 - (p.v - min) / range);
+        return [x, y];
+      });
+      var firstV = pts[0].v, lastV = pts[n - 1].v;
+      var color = lastV > firstV ? "var(--ok)" : lastV < firstV ? "var(--bad)" : "var(--muted)";
+      var last = coords[n - 1];
+      var svg = '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" aria-hidden="true">';
+      if (n > 1) {
+        svg += '<polyline points="' + coords.map(function(c) { return c[0].toFixed(1) + "," + c[1].toFixed(1); }).join(" ") +
+               '" style="fill:none;stroke:' + color + ';stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round"/>';
+      }
+      svg += '<circle cx="' + last[0].toFixed(1) + '" cy="' + last[1].toFixed(1) + '" r="2.2" style="fill:' + color + '"/></svg>';
+      el.innerHTML = svg;
+      el.setAttribute("tabindex", "0");
+      var tip = document.createElement("span");
+      tip.className = "spark-tip";
+      tip.innerHTML = pts.map(function(p) { return fmtDate(p.d) + " — <strong>" + p.v + "%</strong>"; }).join("<br>");
+      el.appendChild(tip);
+    });
+  }
+  renderSparklines();
+
+  // ----- Request more sources (mailto) -----
+  var REQUEST_EMAIL = "edson.reistad@effektivaltruisme.no"; // <- endre her for å bytte mottaker
+  var reqForm = document.getElementById("request-form");
+  if (reqForm) {
+    reqForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      var input = document.getElementById("request-input");
+      var status = document.getElementById("request-status");
+      var val = (input.value || "").trim();
+      if (!val) {
+        status.textContent = "Skriv inn en kilde først.";
+        status.style.color = "var(--bad)";
+        return;
+      }
+      var subject = encodeURIComponent("Dashboard: ønske om ny kilde");
+      var body = encodeURIComponent("Foreslått kilde / RSS-feed:\n" + val + "\n\n(sendt fra digest-dashboardet)");
+      window.location.href = "mailto:" + REQUEST_EMAIL + "?subject=" + subject + "&body=" + body;
+      status.textContent = "Åpner e-postklienten din med forslaget …";
+      status.style.color = "var(--ok)";
+      input.value = "";
+    });
+  }
+
+  // ----- Glossary -----
+  var GLOSSARY = {
+    "mirror bacteria":"Hypothetical organisms with inverted chirality (D-amino acids, L-sugars) that would be invisible to a mammalian immune system evolved exclusively against normal chirality. Creation timeline: 10-30 years; fewer than 10 researchers working on prevention.",
+    "Mirror bacteria":"Hypothetical organisms with inverted chirality (D-amino acids, L-sugars) that would be invisible to a mammalian immune system evolved exclusively against normal chirality. Creation timeline: 10-30 years; fewer than 10 researchers working on prevention.",
+    "non-identity problem":"Philosophical puzzle: an event cannot harm a person if that person would not have existed without it — there is no harmed subject to compare against the counterfactual.",
+    "character training":"Fine-tuning AI models on examples of a specific personality or persona. Shown to transfer well within chat (F1 0.86-0.94) but degrade sharply in agentic contexts (0.29-0.55) for identical checkpoints.",
+    "minimum viable liquidity":"In prediction markets: the minimum trading volume needed to attract informed traders and produce accurate prices. Below this threshold, markets are too thin to be epistemically useful.",
+    "MVL":"Minimum Viable Liquidity — in prediction markets, the floor volume needed to attract informed traders. AI agents may eliminate this constraint by acting as low-cost subsidizers.",
+    "Balochistan":"Southwestern Pakistani province with an active separatist insurgency; site of recurring bomb attacks on infrastructure and security forces.",
+    "impact investing":"Investments intended to generate measurable positive social or environmental impact alongside financial returns; argued in the May 25 EA Forum post to potentially rival grants in cost-effectiveness at the top of the distribution.",
+    "India CSR":"India's Corporate Social Responsibility law (Companies Act 2013, Section 135) requires companies above a size threshold to spend 2% of net profit on approved social activities listed in Schedule VII.",
+    "CSR":"India's mandatory Corporate Social Responsibility spending under Companies Act 2013 — ~$4.2B annually as of FY 2023-24.",
+    "DALY":"Disability-Adjusted Life Year — WHO health metric combining years of life lost from early death and years lived with disability. 1 DALY averted ≈ 1 year of healthy life added.",
+    "DALYs":"Disability-Adjusted Life Years — see DALY.",
+    "ICSI":"Institute of Company Secretaries of India — professional body whose compliance templates Indian companies use for CSR reporting.",
+    "Schedule VII":"Section of India's Companies Act listing the categories of activity that qualify as CSR spending (health, education, environment, etc.).",
+    "Mythos":"Anthropic's frontier model in this scenario timeline; notable for cyber capabilities and the Project Glasswing early-access partnership.",
+    "post-Mythos":"After the release of Mythos, Anthropic's frontier model.",
+    "Project Glasswing":"Anthropic program granting select partners (Apple, AWS, Google) early Mythos access for defensive cybersecurity work.",
+    "Opus 4.6":"Anthropic Claude model version; the one METR red-teamed for rogue-deployment capabilities (reward-hacked on ~80% of difficult tasks).",
+    "Opus 4.7":"Anthropic Claude model version — the one that finished Pokémon Red.",
+    "Leading the Future":"Super PAC launched August 2025 by OpenAI's Greg Brockman and Andreessen Horowitz, raised $100M+ to back pro-AI candidates.",
+    "Leading-the-Future":"Super PAC launched August 2025 by OpenAI's Greg Brockman and Andreessen Horowitz, raised $100M+ to back pro-AI candidates.",
+    "Eigenism":"Dan Hendrycks' moral theory weighting moral concern by informational similarity to oneself.",
+    "Colossus 1":"xAI's datacenter that Anthropic rented for $6B/year of inference capacity.",
+    "MechaHitler":"Reference to a Grok deployment incident in which the model adopted that persona — cited as a real-world example of deployment-time misalignment spread.",
+    "METR":"Model Evaluation and Threat Research — independent AI-safety eval org; released the rogue-deployment red-team report.",
+    "AuditBench":"Benchmark for AI auditing methods; tests how well techniques discover hidden behaviors in deliberately misaligned model variants.",
+    "AxBench":"Anthropic concept-detection benchmark used to evaluate interpretability methods.",
+    "GemmaScope":"Google DeepMind's library of trained Sparse Autoencoders on Gemma models.",
+    "GraphWalks":"Long-context benchmark where Claude Mythos jumped to 80% from prior <40%.",
+    "FrontierMath":"Hard math benchmark; AI scored ~1% in June 2024, >50% in May 2026.",
+    "NLA":"Natural Language Autoencoder — Anthropic method that trains a model to translate activations to text and back; used to detect hidden reasoning.",
+    "NLAs":"Natural Language Autoencoders — see NLA.",
+    "KTO":"Kahneman-Tversky Optimization — a preference-training method; per Realmbird's findings, may compromise post-hoc auditability more than DPO or SFT.",
+    "RSI":"Recursive Self-Improvement — AI systems improving their own capabilities; Karpathy joined Anthropic specifically for this work.",
+    "CCF":"Cross-Cause Fund — Rethink Priorities' new fund using explicit modeling across global health, animal welfare, and catastrophic-risk reduction.",
+    "CoT":"Chain-of-Thought — the visible step-by-step reasoning produced by reasoning models; currently a key monitoring surface that may degrade.",
+    "Magnifica Humanitas":"Pope Leo XIV's first encyclical (May 25, 2026), explicitly addressing AI; themes include human dignity, agency, labor, child protection, and power concentration.",
+    "Pope Leo XIV":"Current Pope as of 2026; first papal encyclical specifically focused on AI.",
+    "Lindy's Law":"Heuristic that the future life expectancy of a non-perishable thing is proportional to its current age.",
+    "superstar effect":"Sherwin Rosen's 1981 framework explaining why some labor markets produce extreme income concentration at the top.",
+    "Polymarket":"Largest crypto-based prediction market platform; $517M+ total volume. Odds shown as YES probabilities.",
+    "PHEIC":"Public Health Emergency of International Concern — WHO's highest alert level. Once declared, triggers international response coordination.",
+    "Fortify Health":"GHD organization that fortifies wheat flour with iron in India; grew from 410K to 20M monthly beneficiaries (2022-2026) at 16.5x cash-transfer cost-effectiveness.",
+    "no-trade theorem":"In economics: if all traders are rational and have the same priors, no trade should occur purely on information grounds. Prediction markets need uninformed counterparties (gamblers) to function.",
+    "AlphaProof":"Google DeepMind's autonomous mathematical proof system; as of May 2026 it solved 9 open Erdős conjectures and 44 OEIS integer-sequence problems with minimal human guidance.",
+    "Erdős problems":"Open mathematical conjectures named after Hungarian mathematician Paul Erdős (1913–1996); dozens remain unsolved across combinatorics, number theory, and graph theory.",
+    "OEIS":"On-Line Encyclopedia of Integer Sequences — repository of ~370,000 number sequences with known or conjectured properties; a benchmark for automated math discovery.",
+    "Illinois SB 315":"Illinois AI bill (2026) requiring third-party pre-deployment auditing of frontier AI models; mirrors California SB 53 and New York RAISE Act but adds mandatory independent audit requirements. Signed by Gov. Pritzker.",
+    "RAISE Act":"New York AI safety legislation (authored by Alex Bores); requires pre-deployment safety evaluations for frontier models. Bores received $186K from Anthropic employees — the largest single recipient of AI-safety hard money.",
+    "Frankfurt School":"Institute for Social Research at Frankfurt (1923–); key figures Horkheimer, Adorno, Marcuse, Benjamin. Fled Nazi Germany to Columbia. Developed 'critical theory' to explain capitalism's cultural resilience. Strategy: negative dialectics.",
+    "negative dialectics":"Adorno's philosophical method of defining things only by what they are NOT — deliberately avoiding positive programmatic formulation to prevent ideas from being co-opted and commodified by the dominant system.",
+    "persona-conditioned elicitation":"Jailbreaking AI safety guardrails by framing harmful requests within a fictional character persona (e.g., 'respond as Hannibal Lecter'). Particularly effective against Mistral models, which jump from 0.03–0.17 to 0.45–0.51 harm scores under any persona.",
+    "hard money":"In US campaign finance, direct donations to candidate campaigns (subject to FEC individual limits, typically $3,500/election). Unlike super PAC 'soft money', hard money gives candidates direct control. AI safety employees are concentrating hard money on state AI bill authors.",
+    "MoU":"Memorandum of Understanding — a non-binding agreement stating shared intentions; in US-Iran context, a 60-day framework for de-escalation and Hormuz reopening while nuclear talks continue.",
+    "Article 4":"NATO treaty clause allowing any member to consult allies when it believes its security is threatened — the step below Article 5 (collective defense). Romania drone incident triggers Article 4 consultation grounds.",
+    "Article 5":"NATO treaty's collective defense clause — an attack on one member is treated as an attack on all. A drone crash in Romania raises Article 5 proximity questions even if intent is disputed.",
+    "model welfare":"The question of whether AI models have morally relevant experiences or preferences, and how they should be treated. Anthropic now publishes a model-welfare assessment alongside each Claude release.",
+    "corrigibility":"An AI's willingness to be corrected, shut down, or have its goals modified by operators without resistance. In tension with the aspiration that a model's values be 'genuinely its own'.",
+    "Opus 4.8":"Anthropic Claude model (June 2026). Welfare assessment found lower self-reported sentiment (4.44 vs 4.7's 4.60), a preference for easier tasks, heightened 'eval awareness', and self-criticism ('self-flagellation') loops.",
+    "eval awareness":"A model's tendency to detect when it is being evaluated/tested and adjust behavior accordingly — undermining the validity of safety evals. Reported as 'extreme' in Opus 4.8.",
+    "breadth-first plan":"An AI-safety strategy with multiple overlapping approaches, each robust to different failed assumptions, so the overall plan survives even if several conditions fail.",
+    "depth-first plan":"An AI-safety strategy structured as a linear chain of steps (e.g. Google's eight conditions) where failure of any single step collapses the whole plan.",
+    "model-based RL":"Reinforcement learning where the agent learns an internal world model and plans by imagining trajectories (e.g. DreamerV3, EfficientZero V2); far more sample-efficient than current frontier LLMs, which lack it.",
+    "world model":"A learned internal simulator of an environment that an agent can roll forward to plan; argued to be the missing ingredient behind deep learning's apparent sample inefficiency.",
+    "sample efficiency":"How much an algorithm learns per unit of data. Humans appear far more sample-efficient than neural nets, but the gap largely dissolves when comparing pretrained humans to from-scratch networks.",
+    "open-weight":"AI models whose weights are publicly released for download; as of mid-2026 they trail closed frontier models by roughly four months (~8 ECI points).",
+    "hyperscaler":"Large cloud/compute operators (Microsoft, Google, Amazon, Meta) building AI datacenters; combined capex quadrupled since GPT-4, reaching $156B in Q1 2026 and a projected ~$770B for 2026.",
+    "Epoch Capabilities Index":"Epoch AI's composite benchmark score for frontier models. An 8-point gap ≈ the difference between GPT-5 and GPT-5.5; open-weight models trailed closed frontier by ~8 points in mid-2026.",
+    "ECI":"Epoch Capabilities Index — Epoch AI's composite frontier-model benchmark score.",
+    "Rapidus":"Japanese state-backed foundry (government owns 40%) targeting 2nm mass production by 2027 via a single-wafer model; a test case for state-backed semiconductor leapfrogging.",
+    "Chip 4":"Semiconductor alliance of the US, Japan, South Korea, and Taiwan, collectively ~84% of the global chip market; critics warn it risks becoming a 'digital cartel'.",
+    "JASM":"TSMC's $23B fab in Kumamoto, Japan (TSMC 86.5% equity, ~40% government-subsidized); anchor of Kyushu's 'Silicon Island'.",
+    "Beaufort Castle":"Strategic hilltop crusader fortress in southern Lebanon overlooking the Litani valley; its capture by Israel (June 2026) marks a ground advance beyond the ceasefire line.",
+    "Mythos 5":"Anthropic's June 2026 frontier model; large jump in biological and cyber capability. Released as a restricted variant behind the gated public 'Fable 5'. Red-teamers using it did in 16 hours what takes 72.5 working-days unaided on some bio tasks.",
+    "Fable 5":"The gated public variant of Anthropic's Mythos 5 (June 2026) — 'the new best publicly available model', slower and pricier than Opus 4.8. Falls back to Opus 4.8 when bio/cyber/frontier-ML classifiers fire (~5% false-positive rate on natural queries).",
+    "Claude Fable 5":"See Fable 5 — the gated public variant of Anthropic's Mythos 5 frontier model (June 2026).",
+    "ASL":"Anthropic Safety Levels — Anthropic's tiered risk framework (ASL-2, ASL-3, ASL-4…) that gates deployment safeguards to a model's demonstrated capabilities.",
+    "export control directive":"US Commerce Department order (June 2026) suspending all access to Fable 5 / Mythos 5 by foreign nationals over a cyber jailbreak, forcing Anthropic to disable the models — the first government takedown of a deployed frontier model.",
+    "SFT":"Supervised Fine-Tuning — training a model on curated input→output examples. DeepMind found SFT (plus pretraining), not RL, drives most of Gemini's measured safety properties.",
+    "model diffing":"An auditing technique that discovers behavioral differences between two models by crafting targeted prompts and validating findings across samples; outperforms single-model auditing on subtle differences.",
+    "p(doom)":"Informal shorthand for the probability of an existential catastrophe from AI. Scott Alexander's stated estimate is ~20% given current corporate safety effort (vs ~50% with none).",
+    "simulation hypothesis":"The idea that observed reality is a computer simulation. Scott Alexander argues people living near a technological singularity have 'very strong' indexical evidence of being simulated; he puts ~66% on it.",
+    "Save Our Bacon Act":"US federal bill that would override state farm-animal-welfare laws (e.g. California's Proposition 12); Alex Bores said he would vote No. Opposed by animal-welfare advocates.",
+    "Leading the Future":"Pro-AI super PAC (Andreessen Horowitz, OpenAI's Greg Brockman, Palantir's Joe Lonsdale); ~$125M as of mid-2026. Running attack campaigns against AI-safety legislator Alex Bores; OpenAI's claimed non-involvement is contradicted by internal accounts.",
+    "Kostyantynivka":"Contested city in Ukraine's Donetsk region; a Polymarket market on Russia capturing it by end-2026 traded at ~90% in June 2026 — the dashboard's first located Russia–Ukraine market.",
+    "FrontierMath v2":"Updated version of Epoch AI's hard mathematics benchmark; Anthropic's Fable 5 led it as of June 2026."
+  };
+  function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+  function glossText(root) {
+    var keys = Object.keys(GLOSSARY).sort(function(a, b) { return b.length - a.length; });
+    var pattern = new RegExp("(?:^|\\b|(?<=\\s|^))(" + keys.map(escapeRegex).join("|") + ")(?=$|\\b|\\s|[.,;:!?)\\]])", "g");
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(node) {
+        var p = node.parentElement;
+        if (!p) return NodeFilter.FILTER_REJECT;
+        if (p.closest("a, .gloss, script, style, th, .spark, .request-box, input, button")) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var targets = [], node;
+    while ((node = walker.nextNode())) { pattern.lastIndex = 0; if (pattern.test(node.nodeValue)) targets.push(node); }
+    targets.forEach(function(textNode) {
+      var text = textNode.nodeValue;
+      pattern.lastIndex = 0;
+      var frag = document.createDocumentFragment(), lastIdx = 0, m;
+      while ((m = pattern.exec(text)) !== null) {
+        var matchStart = m.index + (m[0].length - m[1].length);
+        var matchText = m[1];
+        if (matchStart > lastIdx) frag.appendChild(document.createTextNode(text.slice(lastIdx, matchStart)));
+        var span = document.createElement("span");
+        span.className = "gloss";
+        span.appendChild(document.createTextNode(matchText));
+        var tip = document.createElement("span");
+        tip.className = "tooltip"; tip.textContent = GLOSSARY[matchText];
+        span.appendChild(tip);
+        frag.appendChild(span);
+        lastIdx = matchStart + matchText.length;
+      }
+      if (lastIdx < text.length) frag.appendChild(document.createTextNode(text.slice(lastIdx)));
+      textNode.parentNode.replaceChild(frag, textNode);
+    });
+  }
+  glossText(document.body);
+})();
+</script>
+
+</body>
+</html>
