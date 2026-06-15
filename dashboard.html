@@ -228,14 +228,15 @@
 <body>
 
 <h1>Digest Dashboard</h1>
-<div class="meta">Last updated 2026-06-14 · Current period: 2026-05-23 → 2026-06-14 · Earlier items archived</div>
+<div class="meta">Last updated 2026-06-15 · Latest run: 2026-06-15 · Forrige uke beholdt (kollapset nederst)</div>
 
 <div class="stats">
-  <div class="stat"><strong>52</strong> items this period</div>
+  <div class="stat"><strong>7</strong> saker i siste kjøring</div>
+  <div class="stat"><strong>59</strong> totalt (52 tidligere, kollapset)</div>
   <div class="stat"><strong>12</strong> tracked markets</div>
   <div class="stat"><strong>20</strong> sources</div>
   <div class="stat"><strong>10</strong> healthy · <strong>5</strong> partial · <strong>5</strong> broken</div>
-  <div class="stat">Period: <strong>18</strong> general · <strong>21</strong> AI · <strong>13</strong> significant</div>
+  <div class="stat">Siste kjøring: <strong>2</strong> general · <strong>4</strong> AI · <strong>1</strong> significant (AI)</div>
 </div>
 
 <a href="archive.html" class="archive-link">📂 Browse archive (47 items from May 2–22) →</a>
@@ -361,7 +362,7 @@
   <br><strong>Sparklinjen viser hele den daterte historikken</strong> (grønn = opp siden start, rød = ned). Fortsatt ikke funnet: Russia–Ukraina-<em>våpenhvile</em>, Russia–NATO, AGI-dato. Si "add market X" for å legge til.
 </div>
 
-<h2>Current period — 2026-05-23 to 2026-06-14</h2>
+<h2>Latest run — 2026-06-15</h2>
 <div class="filter-bar">
   <span class="label">Filter:</span>
   <button class="filter-pill active" data-filter="all">All</button>
@@ -369,8 +370,60 @@
   <button class="filter-pill" data-filter="ai">AI</button>
   <button class="filter-pill" data-filter="significant">Significant</button>
 </div>
-<div class="hint">Click a column header to sort. Default: score, high to low.</div>
+<div class="hint">Click a column header to sort. Default: score, high to low. <strong>«Significant» betyr nå kun AI-signifikante nyheter</strong> (regelendring fra 15. juni); eldre verdensnyheter ligger i den kollapsede seksjonen under.</div>
 <table id="items-table" data-default-sort="score" data-default-dir="desc">
+  <thead>
+    <tr>
+      <th class="sortable" data-key="score" data-type="number" style="width: 70px;">Score</th>
+      <th class="sortable" data-key="date" data-type="date" style="width: 100px;">Date</th>
+      <th class="sortable" data-key="feed" data-type="string" style="width: 60px;">Feed</th>
+      <th class="sortable" data-key="source" data-type="string" style="width: 30%;">Source · Title</th>
+      <th style="width: 38%;">Belief update</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-score="78" data-date="2026-06-15" data-feed="significant" data-source="The Zvi / LessWrong">
+      <td><span class="score high">78</span></td><td class="date">2026-06-15</td><td><span class="feed-tag significant">SIG·AI</span></td>
+      <td class="title"><span class="source-name">The Zvi / LessWrong</span> · <a href="https://thezvi.substack.com/p/the-once-and-future-fable-2">The Once And Future Fable #2 — anatomy of the Fable/Mythos takedown</a><span class="badge-sig">AI</span></td>
+      <td class="belief">New facts on the first government takedown of a frontier model: an Amazon-reported jailbreak (not a breach) triggered a Friday-noon White House ultimatum to pull Fable/Mythos within 90 minutes "with no details on the actual threat." Zvi reads it as "vibe governing" — punishment for perceived non-compliance — and warns the durable precedent is that "AI is licensed now, but the requirements change constantly and are always a secret."</td>
+    </tr>
+    <tr data-score="65" data-date="2026-06-15" data-feed="ai" data-source="LessWrong / EA Forum">
+      <td><span class="score high">65</span></td><td class="date">2026-06-15</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">LessWrong / EA Forum</span> · <a href="https://www.lesswrong.com/posts/ZYe5qNMGqaBHKEW2H/can-the-safety-tax-be-highly-concentrated">Can the Safety Tax Be Highly Concentrated?</a></td>
+      <td class="belief">If catastrophic risk concentrates in a tiny fraction of actions, a 100× safety multiplier on 0.1% of actions is "roughly a 10% tax on the system" — making expensive safety economically viable via selective routing to specialized high-safety agents. Hinges on risk being concentrable; fails in worlds where danger is spread evenly across tasks.</td>
+    </tr>
+    <tr data-score="62" data-date="2026-06-14" data-feed="ai" data-source="Alignment Forum">
+      <td><span class="score high">62</span></td><td class="date">2026-06-14</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">Alignment Forum</span> · <a href="https://www.alignmentforum.org/posts/wyZRNgpeiPeRXB6eT/why-do-naive-sft-filters-for-safety-properties-fail">Why Do Naive SFT Filters For Safety Properties Fail?</a></td>
+      <td class="belief">Filtering unsafe examples out of SFT data does NOT remove the behaviors — traits like date-confusion and blackmail persist post-filter, transferring through indirect mechanisms rather than the obvious data. Data-curation alone is an unreliable safety lever; an important caveat to the "SFT drives safety" result.</td>
+    </tr>
+    <tr data-score="60" data-date="2026-06-15" data-feed="ai" data-source="LessWrong / EA Forum">
+      <td><span class="score high">60</span></td><td class="date">2026-06-15</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">LessWrong / EA Forum</span> · <a href="https://www.lesswrong.com/posts/bStYDEy8PQPt2c3Za/a-frontier-ai-company-should-shut-down">A frontier AI company should shut down</a></td>
+      <td class="belief">Argues a safety-leading lab should voluntarily halt to signal AI x-risk is real and that competitor coordination is possible — "Shutting down sends a strong signal to governments." A test of whether labs believe their own extinction warnings; the main counter is that it forfeits in-house safety research.</td>
+    </tr>
+    <tr data-score="55" data-date="2026-06-15" data-feed="general" data-source="Bentham's Bulldog">
+      <td><span class="score">55</span></td><td class="date">2026-06-15</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">Bentham's Bulldog</span> · <a href="https://benthams.substack.com/p/for-every-one-of-us-there-are-many">For Every One Of Us, There Are Many of Them</a></td>
+      <td class="belief">Scope-neglect about large numbers leads us to under-weight wild-animal suffering and the far future, which dominate on raw magnitude; the bias, not the moral math, explains the neglect. Pushes toward taking astronomically-large-but-diffuse moral categories seriously.</td>
+    </tr>
+    <tr data-score="55" data-date="2026-06-15" data-feed="general" data-source="EA Forum">
+      <td><span class="score">55</span></td><td class="date">2026-06-15</td><td><span class="feed-tag general">GEN</span></td>
+      <td class="title"><span class="source-name">EA Forum</span> · <a href="https://forum.effectivealtruism.org/posts/ouYgwf8jTjxaYAkBo/what-is-it-like-to-be-a-bass-red-herrings-fish-pain-and-the">What Is It Like to Be a Bass? Red Herrings, Fish Pain and the Study of Animal Sentience</a></td>
+      <td class="belief">Distinguishing genuine sentience from mere nociception needs better methodology than behavioral pain-responses alone; proposes criteria for identifying real subjective experience in fish. Tightens the evidential standard underlying animal-welfare prioritization.</td>
+    </tr>
+    <tr data-score="52" data-date="2026-06-15" data-feed="ai" data-source="EA Forum">
+      <td><span class="score">52</span></td><td class="date">2026-06-15</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">EA Forum</span> · <a href="https://forum.effectivealtruism.org/posts/gyLfkSHntbGBkq5ba/our-work-is-low-skill-expression">Our Work is Low Skill Expression</a></td>
+      <td class="belief">AI-safety work has such high outcome variance that short-term results poorly reflect skill or correctness; recommends a diversified portfolio of approaches over over-updating on apparent winners. A caution against premature consolidation in the field.</td>
+    </tr>
+  </tbody>
+</table>
+
+<details class="collapsible">
+<summary>Tidligere saker · 23. mai – 14. juni<span class="summary-hint">skjult som standard · klikk for å vise (52 saker)</span></summary>
+<div class="hint">Click a column header to sort. Default: score, high to low. Inkluderer eldre «significant» verdensnyheter fra før regelendringen (15. juni).</div>
+<table id="items-table-prev" data-default-sort="score" data-default-dir="desc">
   <thead>
     <tr>
       <th class="sortable" data-key="score" data-type="number" style="width: 70px;">Score</th>
@@ -646,6 +699,7 @@
     </tr>
   </tbody>
 </table>
+</details>
 
 <details class="collapsible">
 <summary>Source health<span class="summary-hint">skjult som standard · klikk for å vise (10&nbsp;✅ · 5&nbsp;⚠️ · 5&nbsp;❌)</span></summary>
@@ -697,7 +751,7 @@
 </div>
 
 <footer>
-  Generated 2026-06-14. Open in browser. Older items: <a href="archive.html">archive.html</a> · raw: <a href="archive.json">archive.json</a><br>
+  Generated 2026-06-15. Open in browser. Older items: <a href="archive.html">archive.html</a> · raw: <a href="archive.json">archive.json</a><br>
   After each /digest run, say "update dashboard" to refresh.
 </footer>
 
@@ -744,7 +798,7 @@
       sortTable(table, defKey, defTh ? (defTh.dataset.type || "string") : "string", defDir);
     }
   }
-  document.querySelectorAll("table#items-table, table#sources-table, table#markets-table").forEach(wireTable);
+  document.querySelectorAll("table#items-table, table#items-table-prev, table#sources-table, table#markets-table").forEach(wireTable);
 
   // ----- Filter pills (items table only) -----
   var itemsTable = document.getElementById("items-table");
@@ -925,7 +979,11 @@
     "Save Our Bacon Act":"US federal bill that would override state farm-animal-welfare laws (e.g. California's Proposition 12); Alex Bores said he would vote No. Opposed by animal-welfare advocates.",
     "Leading the Future":"Pro-AI super PAC (Andreessen Horowitz, OpenAI's Greg Brockman, Palantir's Joe Lonsdale); ~$125M as of mid-2026. Running attack campaigns against AI-safety legislator Alex Bores; OpenAI's claimed non-involvement is contradicted by internal accounts.",
     "Kostyantynivka":"Contested city in Ukraine's Donetsk region; a Polymarket market on Russia capturing it by end-2026 traded at ~90% in June 2026 — the dashboard's first located Russia–Ukraine market.",
-    "FrontierMath v2":"Updated version of Epoch AI's hard mathematics benchmark; Anthropic's Fable 5 led it as of June 2026."
+    "FrontierMath v2":"Updated version of Epoch AI's hard mathematics benchmark; Anthropic's Fable 5 led it as of June 2026.",
+    "safety tax":"The extra cost (compute, latency, money) of running an AI more safely than the cheapest option — also called the alignment tax. Argued to stay small system-wide if a large per-action multiplier is applied only to the ~0.1% of high-risk actions.",
+    "alignment tax":"See safety tax — the overhead of running AI safely vs. the cheapest capable configuration.",
+    "nociception":"The nervous system's detection of harmful stimuli (and reflexive response to it), which can occur without any conscious experience of pain — central to debates over whether fish and invertebrates are genuinely sentient.",
+    "scope neglect":"A cognitive bias where emotional/moral response fails to scale with the number affected (helping 2,000 vs 200,000 birds feels the same), causing systematic under-weighting of very large-number problems like wild-animal suffering or the far future."
   };
   function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
   function glossText(root) {
