@@ -235,6 +235,7 @@
   <div class="stat"><strong>67</strong> totalt (59 tidligere, kollapset)</div>
   <div class="stat"><strong>12</strong> tracked markets</div>
   <div class="stat"><strong>3</strong> norske AI-utsagn</div>
+  <div class="stat"><strong>7</strong> norske KI-saker</div>
   <div class="stat"><strong>20</strong> sources</div>
   <div class="stat"><strong>10</strong> healthy · <strong>5</strong> partial · <strong>5</strong> broken</div>
   <div class="stat">Siste kjøring: <strong>3</strong> general · <strong>4</strong> AI · <strong>1</strong> significant (AI)</div>
@@ -392,6 +393,54 @@
       <td><span class="source-name">Nicolai Tangen</span><br><span class="notes">sjef, Oljefondet (NBIM)</span></td>
       <td class="title"><a href="https://www.nettavisen.no/norsk-debatt/nicolai-tangen-advarer-bruker-du-ikke-ai-vil-du-aldri-bli-forfremmet/o/5-95-2939693">Nettavisen</a></td>
       <td class="belief">«Bruker du ikke AI, vil du aldri bli forfremmet. Du får ikke jobb.» Skarp advarsel om at KI-kompetanse blir avgjørende i arbeidslivet.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="hint" style="margin-top: 16px;"><strong>Avisartikler om KI</strong> — snapshot av norsk pressedekning, hentet 18. juni 2026. Oppdateres hver kjøring. Klikk en kolonne for å sortere.</div>
+<table id="norway-press-table" data-default-sort="source" data-default-dir="asc">
+  <thead>
+    <tr>
+      <th class="sortable" data-key="source" data-type="string" style="width: 110px;">Kilde</th>
+      <th class="sortable" data-key="topic" data-type="string" style="width: 120px;">Tema</th>
+      <th>Sak</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-source="NRK" data-topic="Helse">
+      <td><span class="source-name">NRK</span></td>
+      <td><span class="notes">Helse</span></td>
+      <td class="title"><a href="https://www.nrk.no/norge/ki-i-helsevesenet_-kritiker-advarer-om-risiko-for-pasientsikkerheten-1.17873072">KI i helsevesenet: kritiker advarer om risiko for pasientsikkerheten</a> — Helse Sør-Øst kjøper KI-verktøy for 180 mill. som transkriberer pasientsamtaler.</td>
+    </tr>
+    <tr data-source="NRK" data-topic="Utdanning">
+      <td><span class="source-name">NRK</span></td>
+      <td><span class="notes">Utdanning</span></td>
+      <td class="title"><a href="https://www.nrk.no/sorlandet/utdanningsminister-sigrun-aasland-frykter-et-ki-klasseskille-_-vil-sikre-bedre-opplaering-1.17916989">Utdanningsminister Sigrun Aasland frykter et KI-klasseskille</a> — vil sikre bedre KI-opplæring; NIFU: 7 av 10 har ikke lært KI-bruk i utdanningen.</td>
+    </tr>
+    <tr data-source="NRK" data-topic="Utdanning">
+      <td><span class="source-name">NRK</span></td>
+      <td><span class="notes">Utdanning</span></td>
+      <td class="title"><a href="https://www.nrk.no/tromsogfinnmark/ki-dag-pa-uit_-slik-kan-elevene-bruke-det-godt-_-og-kritisk-1.17904403">KI-dag på UiT: slik kan elevene bruke det godt – og kritisk</a></td>
+    </tr>
+    <tr data-source="Aftenposten" data-topic="Arbeidsliv">
+      <td><span class="source-name">Aftenposten</span></td>
+      <td><span class="notes">Arbeidsliv</span></td>
+      <td class="title"><a href="https://www.aftenposten.no/okonomi/i/n14xxa/ingen-ki-jobbkrise-i-norge">Ingen KI-jobbkrise i Norge</a> — men sysselsettingen faller blant de yngste i de mest KI-eksponerte yrkene.</td>
+    </tr>
+    <tr data-source="Aftenposten" data-topic="Kommentar">
+      <td><span class="source-name">Aftenposten</span></td>
+      <td><span class="notes">Kommentar</span></td>
+      <td class="title"><a href="https://www.aftenposten.no/meninger/kommentar/i/kw2gLX/ki-utviklingen-ligner-mer-og-mer-pa-en-ny-opplysningstid-med-motsatt-fortegn">KI-utviklingen ligner mer og mer på en ny opplysningstid – med motsatt fortegn</a></td>
+    </tr>
+    <tr data-source="Khrono" data-topic="Akademia">
+      <td><span class="source-name">Khrono</span></td>
+      <td><span class="notes">Akademia</span></td>
+      <td class="title"><a href="https://www.khrono.no/om-ki-fusk/1051407">Svarer Atle Guttormsen: Om «KI-fusk»</a> — debatt om KI og fusk i høyere utdanning.</td>
+    </tr>
+    <tr data-source="Digi.no" data-topic="Kognisjon">
+      <td><span class="source-name">Digi.no</span></td>
+      <td><span class="notes">Kognisjon</span></td>
+      <td class="title"><a href="https://www.digi.no/nyhetsstudio/hvordan-unngaa-at-ki-gjoer-hjernen-til-groet/121987">Hvordan unngå at KI gjør hjernen til grøt</a></td>
     </tr>
   </tbody>
 </table>
@@ -872,7 +921,7 @@
       sortTable(table, defKey, defTh ? (defTh.dataset.type || "string") : "string", defDir);
     }
   }
-  document.querySelectorAll("table#items-table, table#items-table-prev, table#sources-table, table#markets-table, table#norway-table").forEach(wireTable);
+  document.querySelectorAll("table#items-table, table#items-table-prev, table#sources-table, table#markets-table, table#norway-table, table#norway-press-table").forEach(wireTable);
 
   // ----- Filter pills (items table only) -----
   var itemsTable = document.getElementById("items-table");
