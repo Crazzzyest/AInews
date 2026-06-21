@@ -157,6 +157,7 @@
   .trend-note.down { color: var(--bad); }
   .trend-note.flat { color: var(--muted); font-weight: 400; }
   .trend-note.new  { color: var(--market); }
+  .spark-val { font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; margin-left: 10px; vertical-align: middle; }
 
   /* ---- collapsible source health ---- */
   details.collapsible { margin: 0; }
@@ -231,141 +232,56 @@
 <div class="meta">Last updated 2026-06-19 · Latest run: 2026-06-19 · Forrige uke beholdt (kollapset nederst)</div>
 
 <div class="stats">
-  <div class="stat"><strong>8</strong> saker i siste kjøring</div>
-  <div class="stat"><strong>75</strong> totalt (67 tidligere, kollapset)</div>
-  <div class="stat"><strong>12</strong> tracked markets</div>
-  <div class="stat"><strong>3</strong> norske AI-utsagn</div>
+  <div class="stat"><strong>9</strong> saker i siste kjøring</div>
+  <div class="stat"><strong>76</strong> totalt (67 tidligere, kollapset)</div>
+  <div class="stat"><strong>3</strong> markeder i bevegelse</div>
+  <div class="stat"><strong>1</strong> norsk AI-utsagn</div>
   <div class="stat"><strong>7</strong> norske KI-saker</div>
   <div class="stat"><strong>20</strong> sources</div>
   <div class="stat"><strong>10</strong> healthy · <strong>5</strong> partial · <strong>5</strong> broken</div>
-  <div class="stat">Siste kjøring: <strong>1</strong> general · <strong>6</strong> AI · <strong>1</strong> significant (AI)</div>
+  <div class="stat">Siste kjøring: <strong>1</strong> general · <strong>7</strong> AI · <strong>1</strong> significant (AI)</div>
 </div>
 
 <a href="archive.html" class="archive-link">📂 Browse archive (47 items from May 2–22) →</a>
 
 <h2>Prediction markets — major-event odds</h2>
-<div class="hint">Polymarket YES probabilities for catastrophic-risk / major-event markets. Last refreshed 2026-06-18 (kun fredsavtalen rent hentet). <strong>Hover sparklinjen</strong> for å se hver datert verdi (når markedet faktisk endret seg), ikke bare siste delta.</div>
-<table id="markets-table" data-default-sort="volume" data-default-dir="desc">
+<div class="hint">Polymarket — viser <strong>kun markeder som har beveget seg siden forrige periode</strong> (flate og lavt omsatte er filtrert bort). Tallet ved grafen er dagens sannsynlighet; hover grafen for datert historikk. Sist hentet 2026-06-19.</div>
+<table id="markets-table" data-default-sort="change" data-default-dir="desc">
   <thead>
     <tr>
-      <th class="sortable" data-key="yes" data-type="number" style="width: 80px;">YES %</th>
-      <th style="width: 130px;">Trend</th>
-      <th class="sortable" data-key="category" data-type="string" style="width: 100px;">Category</th>
-      <th class="sortable" data-key="market" data-type="string">Market</th>
-      <th class="sortable" data-key="volume" data-type="number" style="width: 80px;">Volume</th>
-      <th class="sortable" data-key="resolves" data-type="date" style="width: 110px;">Resolves</th>
+      <th class="sortable" data-key="change" data-type="number" style="width: 170px;">Utvikling</th>
+      <th class="sortable" data-key="category" data-type="string" style="width: 100px;">Kategori</th>
+      <th class="sortable" data-key="market" data-type="string">Marked</th>
+      <th>Hvorfor</th>
     </tr>
   </thead>
   <tbody>
-    <tr data-yes="99" data-category="Conflict" data-market="US–Iran permanent peace deal by Dec 31" data-volume="308000000" data-resolves="2026-12-31">
-      <td><span class="odds high-prob">99%</span></td>
-      <td class="trend"><span class="spark" data-history="2025-01-15:67.5|2025-01-21:87.5|2026-05-22:71|2026-05-25:84|2026-05-29:78|2026-06-01:72|2026-06-14:82|2026-06-18:99"></span><span class="trend-note up">→ ~99% (avtale annonsert)</span></td>
+    <tr data-change="17" data-category="Conflict" data-market="US–Iran permanent peace deal">
+      <td class="trend"><span class="spark" data-history="2025-01-15:67.5|2025-01-21:87.5|2026-05-22:71|2026-05-25:84|2026-05-29:78|2026-06-01:72|2026-06-14:82|2026-06-18:99"></span></td>
       <td><span class="feed-tag market">Conflict</span></td>
-      <td class="title"><a href="https://polymarket.com/event/us-x-iran-permanent-peace-deal-by">US–Iran permanent peace deal by Dec 31</a></td>
-      <td class="volume">$308M</td>
-      <td class="date">2026-12-31</td>
+      <td class="title"><a href="https://polymarket.com/event/us-x-iran-permanent-peace-deal-by">US–Iran permanent fredsavtale innen 31. des</a></td>
+      <td class="belief">Spranget til ~99% (fra 82 % 14. juni) kom da avtaleteksten ble annonsert og Trump varslet snarlig signering — markedet priser nå inn at en avtale faktisk lander.</td>
     </tr>
-    <tr data-yes="66" data-category="Conflict" data-market="US–Iran diplomatic meeting by July 31" data-volume="43000000" data-resolves="2026-07-31">
-      <td><span class="odds high-prob">66%</span></td>
-      <td class="trend"><span class="spark" data-history="2026-06-01:66"></span><span class="trend-note flat">per 1. juni</span></td>
+    <tr data-change="14" data-category="Conflict" data-market="Strait of Hormuz traffic normal by end of June">
+      <td class="trend"><span class="spark" data-history="2026-05-25:56|2026-05-29:38|2026-06-01:21|2026-06-19:7"></span></td>
       <td><span class="feed-tag market">Conflict</span></td>
-      <td class="title"><a href="https://polymarket.com/markets/geopolitics">US–Iran diplomatic meeting by July 31</a></td>
-      <td class="volume">$43M</td>
-      <td class="date">2026-07-31</td>
+      <td class="title"><a href="https://polymarket.com/markets/geopolitics">Hormuz: trafikk normal innen 30. juni</a></td>
+      <td class="belief">Falt 21 % → 7 % selv om fredsavtalen prises høyt: fristen (30. juni) nærmer seg uten at skipstrafikken faktisk er normalisert, så tiden renner ut.</td>
     </tr>
-    <tr data-yes="17" data-category="Conflict" data-market="US invades Iran before 2027" data-volume="33000000" data-resolves="2026-12-31">
-      <td><span class="odds low-prob">17%</span></td>
-      <td class="trend"><span class="spark" data-history="2026-05-29:17|2026-06-01:17"></span><span class="trend-note flat">per 1. juni</span></td>
+    <tr data-change="3" data-category="Conflict" data-market="US invades Iran before 2027">
+      <td class="trend"><span class="spark" data-history="2026-05-29:17|2026-06-01:17|2026-06-19:14"></span></td>
       <td><span class="feed-tag market">Conflict</span></td>
-      <td class="title"><a href="https://polymarket.com/markets/geopolitics">US invades Iran before 2027</a></td>
-      <td class="volume">$33M</td>
-      <td class="date">2026-12-31</td>
-    </tr>
-    <tr data-yes="80" data-category="Conflict" data-market="Trump announces US blockade of Hormuz lifted by July 31" data-volume="33000000" data-resolves="2026-07-31">
-      <td><span class="odds high-prob">80%</span></td>
-      <td class="trend"><span class="spark" data-history="2026-06-14:80"></span><span class="trend-note new">NY denne uka</span></td>
-      <td><span class="feed-tag market">Conflict</span></td>
-      <td class="title"><a href="https://polymarket.com/markets/geopolitics">Trump announces US Hormuz blockade lifted by July 31</a></td>
-      <td class="volume">$33M</td>
-      <td class="date">2026-07-31</td>
-    </tr>
-    <tr data-yes="7" data-category="Conflict" data-market="China invades Taiwan by end of 2026" data-volume="32000000" data-resolves="2026-12-31">
-      <td><span class="odds low-prob">7%</span></td>
-      <td class="trend"><span class="spark" data-history="2025-01-21:7|2026-05-22:7|2026-05-25:7|2026-05-29:7|2026-06-01:7"></span><span class="trend-note flat">±0 (flatt siden jan '25)</span></td>
-      <td><span class="feed-tag market">Conflict</span></td>
-      <td class="title"><a href="https://polymarket.com/event/will-china-invade-taiwan-before-2027">China invades Taiwan by end of 2026</a></td>
-      <td class="volume">$32M</td>
-      <td class="date">2026-12-31</td>
-    </tr>
-    <tr data-yes="39" data-category="Conflict" data-market="Iran agrees to surrender enriched uranium stockpile" data-volume="14000000" data-resolves="2026-12-31">
-      <td><span class="odds">39%</span></td>
-      <td class="trend"><span class="spark" data-history="2026-05-25:61|2026-05-29:49|2026-06-01:39"></span><span class="trend-note flat">per 1. juni</span></td>
-      <td><span class="feed-tag market">Conflict</span></td>
-      <td class="title"><a href="https://polymarket.com/markets/geopolitics">Iran surrenders enriched uranium stockpile</a></td>
-      <td class="volume">$14M</td>
-      <td class="date">2026-12-31</td>
-    </tr>
-    <tr data-yes="21" data-category="Conflict" data-market="Strait of Hormuz traffic normal by end of June" data-volume="13000000" data-resolves="2026-06-30">
-      <td><span class="odds low-prob">21%</span></td>
-      <td class="trend"><span class="spark" data-history="2026-05-25:56|2026-05-29:38|2026-06-01:21"></span><span class="trend-note flat">per 1. juni</span></td>
-      <td><span class="feed-tag market">Conflict</span></td>
-      <td class="title"><a href="https://polymarket.com/markets/geopolitics">Strait of Hormuz traffic normal by end of June</a></td>
-      <td class="volume">$13M</td>
-      <td class="date">2026-06-30</td>
-    </tr>
-    <tr data-yes="90" data-category="Conflict" data-market="Russia captures Kostyantynivka by Dec 31" data-volume="0" data-resolves="2026-12-31">
-      <td><span class="odds high-prob">90%</span></td>
-      <td class="trend"><span class="spark" data-history="2026-06-14:90"></span><span class="trend-note new">NY (Russia–Ukraina)</span></td>
-      <td><span class="feed-tag market">Conflict</span></td>
-      <td class="title"><a href="https://polymarket.com/markets/geopolitics">Russia captures Kostyantynivka by Dec 31</a></td>
-      <td class="volume">—</td>
-      <td class="date">2026-12-31</td>
-    </tr>
-    <tr data-yes="81" data-category="Politics" data-market="Democrats win House 2026" data-volume="7000000" data-resolves="2026-11-03">
-      <td><span class="odds high-prob">81%</span></td>
-      <td class="trend"><span class="spark" data-history="2026-05-22:80|2026-05-25:81|2026-05-29:81"></span><span class="trend-note flat">per 29. mai</span></td>
-      <td><span class="feed-tag market">Politics</span></td>
-      <td class="title"><a href="https://polymarket.com/event/which-party-will-win-the-house-in-2026">Democrats win House 2026</a></td>
-      <td class="volume">$7M</td>
-      <td class="date">2026-11-03</td>
-    </tr>
-    <tr data-yes="33" data-category="Conflict" data-market="US–Iran nuclear deal by June 30" data-volume="4000000" data-resolves="2026-06-30">
-      <td><span class="odds">33%</span></td>
-      <td class="trend"><span class="spark" data-history="2026-05-29:53|2026-06-01:33"></span><span class="trend-note flat">per 1. juni</span></td>
-      <td><span class="feed-tag market">Conflict</span></td>
-      <td class="title"><a href="https://polymarket.com/markets/geopolitics">US–Iran nuclear deal by June 30</a></td>
-      <td class="volume">$4M</td>
-      <td class="date">2026-06-30</td>
-    </tr>
-    <tr data-yes="96" data-category="AI / Tech" data-market="Anthropic $1T valuation by Dec 31" data-volume="473000" data-resolves="2026-12-31">
-      <td><span class="odds high-prob">96%</span></td>
-      <td class="trend"><span class="spark" data-history="2026-05-25:96|2026-05-29:96|2026-06-01:96"></span><span class="trend-note flat">±0</span></td>
-      <td><span class="feed-tag market">AI / Tech</span></td>
-      <td class="title"><a href="https://polymarket.com/event/will-anthropics-valuation-hit-by-december-31">Anthropic $1T valuation by Dec 31</a></td>
-      <td class="volume">$473K</td>
-      <td class="date">2026-12-31</td>
-    </tr>
-    <tr data-yes="84" data-category="AI / Tech" data-market="OpenAI $1T valuation by Dec 31" data-volume="368000" data-resolves="2026-12-31">
-      <td><span class="odds high-prob">84%</span></td>
-      <td class="trend"><span class="spark" data-history="2026-05-25:84|2026-05-29:84|2026-06-01:84"></span><span class="trend-note flat">±0</span></td>
-      <td><span class="feed-tag market">AI / Tech</span></td>
-      <td class="title"><a href="https://polymarket.com/event/will-openais-valuation-hit-by-december-31">OpenAI $1T valuation by Dec 31</a></td>
-      <td class="volume">$368K</td>
-      <td class="date">2026-12-31</td>
+      <td class="title"><a href="https://polymarket.com/markets/geopolitics">USA invaderer Iran før 2027</a></td>
+      <td class="belief">Svak nedgang 17 % → 14 % i takt med at fredssporet skrider frem — lavere invasjonsrisiko når en avtale nærmer seg.</td>
     </tr>
   </tbody>
 </table>
 <div class="hint" style="margin-top: 10px;">
-  <strong>Når endret markedene seg? (hover sparklinjen for daterte verdier)</strong><br>
-  <strong>Iran-fredsavtalen snudde opp igjen:</strong> etter fallet 87.5% (jan '25) → 72% (1. juni) sprang den til 82% (14. juni) og videre til <strong>~99% (18. juni)</strong> da avtaleteksten ble annonsert (Polymarket-siden oppga 99%; eksakt sluttkurs ikke rent hentet denne kjøringen). Volum nå $308M.
-  <strong>NB — datadekning denne kjøringen:</strong> Polymarkets geopolitikk-side ga bare rene tall for fredsavtalen + to nye markeder. De øvrige Iran-markedene (atomavtale-juni 33%, Hormuz-juni 21%, uran 39%, USA invaderer 17%) er <em>ikke oppdatert 14. juni</em> og vises med siste kjente verdi (per 1. juni) — derfor «per 1. juni» i Trend-kolonnen, ikke en falsk delta.
-  <strong>Nye markeder:</strong> «Trump kunngjør Hormuz-blokade opphevet før 31. juli» (80%) og <strong>første Russia–Ukraina-marked funnet</strong>: «Russland tar Kostyantynivka før 31. des» (90%).
-  <strong>Taiwan</strong> ligger flatt på 7% siden jan 2025.
-  <br><strong>Sparklinjen viser hele den daterte historikken</strong> (grønn = opp siden start, rød = ned). Fortsatt ikke funnet: Russia–Ukraina-<em>våpenhvile</em>, Russia–NATO, AGI-dato. Si "add market X" for å legge til.
+  Tallet ved grafen = <strong>dagens sannsynlighet</strong> (grønn = opp, rød = ned siden start); hover grafen for datert historikk. <strong>«Hvorfor»</strong> = mulig årsak til bevegelsen. Markeder som har stått stille siden forrige periode, og markeder med lavt volum, vises ikke. Ikke funnet ennå: Russia–Ukraina-våpenhvile, Russia–NATO, AGI-dato. Si "add market X" for å legge til.
 </div>
 
 <h2>🇳🇴 Norsk AI — uttalelser i media</h2>
-<div class="hint">Utsagn om kunstig intelligens fra profilerte norske stemmer (politikk, forskning, næringsliv). Kuratert seksjon, ikke en daglig feed — si «legg til norsk sitat …» for å utvide. Klikk en kolonne for å sortere.</div>
+<div class="hint">Utsagn om kunstig intelligens fra profilerte norske stemmer (politikk, forskning, næringsliv) — <strong>kun siste uke</strong>. Klikk en kolonne for å sortere.</div>
 <table id="norway-table" data-default-sort="date" data-default-dir="desc">
   <thead>
     <tr>
@@ -382,22 +298,11 @@
       <td class="title"><a href="https://www.digi.no/artikler/debatt-ki-gjor-darlige-utviklingsprosesser-farligere/573031">Digi.no</a></td>
       <td class="belief">«Generativ KI introduserer maskinhastighet i miljøer som fortsatt er sikret for menneskelig hastighet.» Advarer (m/ Otto Lote) om at generativ KI forsterker svake utviklingsprosesser i stedet for å gjøre dem tryggere — «risikoen ligger også i miljøet modellen kobles til».</td>
     </tr>
-    <tr data-date="2026-05-20" data-person="Karianne Tung" data-source="Altinget">
-      <td class="date">2026-05-20</td>
-      <td><span class="source-name">Karianne Tung</span><br><span class="notes">digitaliseringsminister</span></td>
-      <td class="title"><a href="https://www.altinget.no/lovebakken/artikkel/tung-svarer-kunstig-intelligens-er-et-nyttig-verktoey-men-mennesker-har-ansvaret">Altinget</a></td>
-      <td class="belief">«Kunstig intelligens er et nyttig verktøy, også for offentlig sektor, men det er alltid mennesker som står ansvarlig.» Understreker at det er «et menneskelig ansvar å sjekke at påstander og kilder stemmer, enten de kommer fra KI eller en avisartikkel».</td>
-    </tr>
-    <tr data-date="2026-03-19" data-person="Nicolai Tangen" data-source="Nettavisen">
-      <td class="date">2026-03-19</td>
-      <td><span class="source-name">Nicolai Tangen</span><br><span class="notes">sjef, Oljefondet (NBIM)</span></td>
-      <td class="title"><a href="https://www.nettavisen.no/norsk-debatt/nicolai-tangen-advarer-bruker-du-ikke-ai-vil-du-aldri-bli-forfremmet/o/5-95-2939693">Nettavisen</a></td>
-      <td class="belief">«Bruker du ikke AI, vil du aldri bli forfremmet. Du får ikke jobb.» Skarp advarsel om at KI-kompetanse blir avgjørende i arbeidslivet.</td>
-    </tr>
   </tbody>
 </table>
+<div class="hint" style="margin-top: 6px; font-style: italic;">Eldre utsagn (Tung 20. mai, Tangen 19. mar) er trimmet bort — kun siste uke vises. Si «vis eldre norske utsagn» om du vil ha dem tilbake.</div>
 
-<div class="hint" style="margin-top: 16px;"><strong>Avisartikler om KI</strong> — snapshot av norsk pressedekning, hentet 19. juni 2026. Oppdateres hver kjøring. Klikk en kolonne for å sortere.</div>
+<div class="hint" style="margin-top: 16px;"><strong>Avisartikler om KI</strong> — snapshot av norsk pressedekning <strong>siste uke</strong>, hentet 19. juni 2026. Oppdateres hver kjøring. Klikk en kolonne for å sortere.</div>
 <table id="norway-press-table" data-default-sort="source" data-default-dir="asc">
   <thead>
     <tr>
@@ -504,6 +409,11 @@
       <td><span class="score">52</span></td><td class="date">2026-06-19</td><td><span class="feed-tag ai">AI</span></td>
       <td class="title"><span class="source-name">LessWrong</span> · <a href="https://www.lesswrong.com/posts/KDbdkvenK3DCTeL6t/hyperstition-as-the-natural-enemy-of-rationality">Hyperstition as the Natural Enemy of Rationality</a></td>
       <td class="belief">Some false beliefs produce better outcomes through self-fulfilling causal effects, creating a dilemma for rationalists (including how AI-optimism can shape AI outcomes). A caution that pure epistemic accuracy can be locally counterproductive in equilibrium-selection problems.</td>
+    </tr>
+    <tr data-score="58" data-date="2026-06-19" data-feed="ai" data-source="Future of Life Institute">
+      <td><span class="score">58</span></td><td class="date">2026-06-19</td><td><span class="feed-tag ai">AI</span></td>
+      <td class="title"><span class="source-name">Future of Life Institute</span> · <a href="https://futureoflife.org/ai/should-ais-be-people-too/">Should AIs be people too?</a></td>
+      <td class="belief">Argues against AI legal personhood: it would enable liability evasion and erode human accountability, and AIs' capacity to be mass-produced and to manipulate discourse at scale makes personhood uniquely dangerous. Adds an institutional voice to the anti-AI-personhood push (cf. the Vatican thread). <em>(Funnet via low-cadence-sjekk.)</em></td>
     </tr>
   </tbody>
 </table>
@@ -885,13 +795,13 @@
     <tr data-source="LessWrong" data-feed="general" data-status="1-ok" data-lastsuccess="2026-06-19" data-count="41"><td><span class="source">LessWrong</span><br><span class="notes">lesswrong.com</span></td><td><span class="feed-tag general">GEN/AI</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-19</td><td class="count">41</td><td class="notes">Jun 19: existential-risk framework, shoggoth meme, Fable world-modeling, hyperstition. Use /feed.xml.</td></tr>
     <tr data-source="EA Forum" data-feed="general" data-status="1-ok" data-lastsuccess="2026-06-19" data-count="41"><td><span class="source">EA Forum</span><br><span class="notes">forum.effectivealtruism.org</span></td><td><span class="feed-tag general">GEN/AI</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-19</td><td class="count">41</td><td class="notes">Jun 19: secret-collusion infra, AI-safety-net-negative, cluelessness; logistics filtered out</td></tr>
     <tr data-source="Transformer News" data-feed="ai" data-status="1-ok" data-lastsuccess="2026-06-19" data-count="12"><td><span class="source">Transformer News</span><br><span class="notes">transformernews.ai</span></td><td><span class="feed-tag ai">AI</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-19</td><td class="count">12</td><td class="notes">"Is Fable the wakeup call DC needed?" (Jun 19) — White House–Anthropic benchmark talks</td></tr>
-    <tr data-source="Epoch AI" data-feed="ai" data-status="1-ok" data-lastsuccess="2026-06-12" data-count="9"><td><span class="source">Epoch AI</span><br><span class="notes">epochai.substack.com</span></td><td><span class="feed-tag ai">AI</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-12</td><td class="count">9</td><td class="notes">Epoch Brief + Mythos cyber analysis + post-AGI capital (Jun 10–12)</td></tr>
+    <tr data-source="Epoch AI" data-feed="ai" data-status="1-ok" data-lastsuccess="2026-06-17" data-count="10"><td><span class="source">Epoch AI</span><br><span class="notes">epochai.substack.com</span></td><td><span class="feed-tag ai">AI</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-17</td><td class="count">10</td><td class="notes">"Toward an O*NET for AI R&D" (Jun 17) — caught on a later check</td></tr>
     <tr data-source="Alignment Forum" data-feed="ai" data-status="1-ok" data-lastsuccess="2026-06-13" data-count="6"><td><span class="source">Alignment Forum</span><br><span class="notes">alignmentforum.org</span></td><td><span class="feed-tag ai">AI</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-13</td><td class="count">6</td><td class="notes">429 cleared this run — fetched Eval-aware + SFT-drives-safety + Byrnes directly (Jun 12–13). 4 posts in window.</td></tr>
     <tr data-source="Al Jazeera" data-feed="significant" data-status="1-ok" data-lastsuccess="2026-06-14" data-count="16"><td><span class="source">Al Jazeera</span><br><span class="notes">aljazeera.com/news</span></td><td><span class="feed-tag significant">SIG</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-14</td><td class="count">16</td><td class="notes">Thin significant coverage this run: Iran deal "tomorrow" (contested), Gaza post-ceasefire toll 983</td></tr>
     <tr data-source="Polymarket" data-feed="market" data-status="1-ok" data-lastsuccess="2026-06-14" data-count="12"><td><span class="source">Polymarket</span><br><span class="notes">polymarket.com</span></td><td><span class="feed-tag market">MKT</span></td><td><span class="status ok">✅ healthy</span></td><td class="date">2026-06-14</td><td class="count">12</td><td class="notes">Peace deal 72→82 (deal imminent). Geopolitics page only surfaced peace deal + 2 new markets cleanly; other Iran markets carried at 1-juni values (marked "per 1. juni"). Added Hormuz-blockade-lifted (80%) + first Russia–Ukraine market (Kostyantynivka 90%). Ceasefire/NATO/AGI markets still not located.</td></tr>
     <tr data-source="80,000 Hours" data-feed="general" data-status="2-warn" data-lastsuccess="2026-06-10" data-count="6"><td><span class="source">80,000 Hours</span><br><span class="notes">80000hours.substack.com</span></td><td><span class="feed-tag general">GEN/AI</span></td><td><span class="status warn">⚠️ low cadence</span></td><td class="date">2026-06-10</td><td class="count">6</td><td class="notes">2 posts (Jun 5, 10): Ted Chiang consciousness (routed AI), high-impact hiring; still ~weekly</td></tr>
     <tr data-source="Rethink Priorities Research Digest" data-feed="general" data-status="2-warn" data-lastsuccess="2026-05-21" data-count="1"><td><span class="source">Rethink Priorities Research Digest</span><br><span class="notes">rpresearchdigest.substack.com</span></td><td><span class="feed-tag general">GEN</span></td><td><span class="status warn">⚠️ low cadence</span></td><td class="date">2026-05-21</td><td class="count">1</td><td class="notes">No posts May 23-25; posts infrequently</td></tr>
-    <tr data-source="Future of Life Institute" data-feed="general" data-status="2-warn" data-lastsuccess="2026-05-20" data-count="1"><td><span class="source">Future of Life Institute</span><br><span class="notes">futureoflife.org</span></td><td><span class="feed-tag general">GEN/AI</span></td><td><span class="status warn">⚠️ low cadence</span></td><td class="date">2026-05-20</td><td class="count">1</td><td class="notes">No posts May 23-25; posts infrequently</td></tr>
+    <tr data-source="Future of Life Institute" data-feed="general" data-status="2-warn" data-lastsuccess="2026-06-19" data-count="3"><td><span class="source">Future of Life Institute</span><br><span class="notes">futureoflife.org</span></td><td><span class="feed-tag general">GEN/AI</span></td><td><span class="status warn">⚠️ low cadence</span></td><td class="date">2026-06-19</td><td class="count">3</td><td class="notes">Low-cadence-sjekk fanget: "Should AIs be people too?" (Jun 19) + self-improvement-pause statement (Jun 8)</td></tr>
     <tr data-source="GovAI" data-feed="ai" data-status="2-warn" data-lastsuccess="2026-05-21" data-count="0"><td><span class="source">GovAI</span><br><span class="notes">governance.ai</span></td><td><span class="feed-tag ai">AI</span></td><td><span class="status warn">⚠️ low cadence</span></td><td class="date">2026-05-21</td><td class="count">0</td><td class="notes">Still only hiring posts through Jun 14; no research content — de-prioritize</td></tr>
     <tr data-source="BBC" data-feed="significant" data-status="2-warn" data-lastsuccess="2026-05-22" data-count="5"><td><span class="source">BBC</span><br><span class="notes">bbc.com/news/world</span></td><td><span class="feed-tag significant">SIG</span></td><td><span class="status warn">⚠️ intermittent</span></td><td class="date">2026-05-22</td><td class="count">5</td><td class="notes">bbc.com blocked this run (WebFetch preflight); last worked May 22. Using Al Jazeera as backup.</td></tr>
     <tr data-source="Semafor" data-feed="general" data-status="3-bad" data-lastsuccess="2026-05-04" data-count="0"><td><span class="source">Semafor</span><br><span class="notes">semafor.com</span></td><td><span class="feed-tag general">GEN</span></td><td><span class="status bad">❌ broken</span></td><td class="date">2026-05-04 (partial)</td><td class="count">0</td><td class="notes">Structurally hostile to WebFetch.</td></tr>
@@ -1028,6 +938,12 @@
       tip.className = "spark-tip";
       tip.innerHTML = pts.map(function(p) { return fmtDate(p.d) + " — <strong>" + p.v + "%</strong>"; }).join("<br>");
       el.appendChild(tip);
+      // current probability shown on the chart itself
+      var val = document.createElement("span");
+      val.className = "spark-val";
+      val.style.color = color;
+      val.textContent = lastV + "%";
+      if (el.parentNode) el.parentNode.appendChild(val);
     });
   }
   renderSparklines();
